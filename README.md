@@ -62,3 +62,17 @@ Caused by: com.ibm.mq.MQException: JMSCMQ0001: IBM MQ call failed with compcode 
         at com.ibm.msg.client.jakarta.wmq.common.internal.Reason.createException(Reason.java:203)
  
 Caused by: com.ibm.msg.client.jakarta.jms.DetailedJMSException: JMSWMQ0018: Failed to connect to queue manager 'MI_OQA02' with connection mode 'Client' and host name 'a1qvap1038.1dc.com(1414)'.
+
+
+
+
+
+
+Product	Category	CYCLE	Servers	IP 	PORT	QM Name	Cluster Name	Environment	Access	MQ Server
+ 
+IBM MQ	Cluster	O-CYCLE	a1qvap1036	10.180.150.162	1414	MI_OQA01	ODSO	Dev	TPAM	8.0.0.4
+IBM MQ	Cluster	O-CYCLE	a1qvap1038	10.180.150.152	1414	MI_OQA02 	ODSO	Dev	TPAM	8.0.0.4
+IBM MQ	Cluster	O-CYCLE	a3qvap1010	10.174.148.189	1414	MI_CQA01	ODSO	Dev	TPAM	8.0.0.4
+IBM MQ	Cluster	O-CYCLE	a3qvap1012	10.174.148.192	1414	MI_CQA02	ODSO	Dev	TPAM	8.0.0.4
+
+
