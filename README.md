@@ -101,16 +101,12 @@ AAA.
 
 
 
-Downloading from Nexus: https://nexus-dev.onefiserv.net/repository/mvn-gl-flume-public-group/org/springframework/boot/mq-jms-spring-boot-starter/3.1.5/mq-jms-spring-boot-starter-3.1.5.jar
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD FAILURE
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  30.696 s
-[INFO] Finished at: 2025-05-27T17:38:16-05:00
-[INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal on project admin: Could not resolve dependencies for project admin:admin:jar:0.0.1-SNAPSHOT: The following artifacts could not be resolved: org.sprin
-gframework.boot:mq-jms-spring-boot-starter:jar:3.1.5 (absent): Could not find artifact org.springframework.boot:mq-jms-spring-boot-starter:jar:3.1.5 in Nexus (https://nexus-dev.onefiserv.net/repository/mvn-gl-flume-public-group/) -> [Help 1]
-[ERROR]
+<dependency>
+    <groupId>com.ibm.mq</groupId>
+    <artifactId>com.ibm.mq.allclient</artifactId>
+    <version>9.3.4.0</version>
+</dependency>
+
 
 
 
