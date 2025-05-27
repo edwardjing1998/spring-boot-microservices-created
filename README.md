@@ -109,6 +109,31 @@ AAA.
 
 
 
+import com.ibm.mq.jms.MQQueueConnectionFactory;
+import com.ibm.msg.client.wmq.WMQConstants;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class MqConfig {
+
+    @Bean
+    public ConnectionFactory mqConnectionFactory() throws JMSException {
+        MQQueueConnectionFactory factory = new MQQueueConnectionFactory();
+        factory.setHostName("your-mq-host");
+        factory.setPort(1414);
+        factory.setQueueManager("QMGR_NAME");
+        factory.setChannel("CHANNEL.NAME");
+        factory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
+        return factory;
+    }
+}
+
+
+
+
 
 
 
