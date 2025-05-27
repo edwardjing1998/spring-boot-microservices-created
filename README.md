@@ -1,42 +1,24 @@
-public class CommandLineParser {
+Hi Everyone 
+ 
+if any one Idea about those errors can you please help me.
+ 
+I got same errors, I had tried 4 servers.
+ 
+a1qvap1036
 
-    public static void main(String[] args) {
-        String commandLine = "EXEC FRPC 'CNONMON','4470431112096227','698','00',,'BLL1','F',,,,,,,'4543 KNOLLCROFT ROAD',' ',,,'TROTWOOD','OH','USA','45426-1936',,,,,'P',,,,,'U'";
-        String sNonMon = extractNonMon(commandLine);
-        System.out.println("sNonMon: " + sNonMon);
-    }
+a1qvap1038
 
-    public static String extractNonMon(String commandLine) {
-        int iPosition;
-        int iNext;
-        String sNonMon = "";
+a3qvap1010
 
-        // Check if "CNONMON'" exists in the command line
-        if (commandLine.contains("CNONMON'")) {
-            iPosition = commandLine.indexOf("CNONMON'");
+a3qvap1012
+ 
+Caused by: com.ibm.mq.jmqi.JmqiException: CC=2;RC=2009;AMQ9204: Connection to host 'a1qvap1038.1dc.com(1414)' rejected. [1=com.ibm.mq.jmqi.JmqiExcep
 
-            // Move iPosition 12 characters ahead
-            iPosition = iPosition + 12;
+tion[CC=2;RC=2009;AMQ9213: A communications error for 'TCP' occurred. [1=java.net.SocketException[Connection reset],4=TCP,5=sockInStream.read]],3=a1qvap1038.1dc.com(1414),4=,5=RemoteTCPConnection.receive]
 
-            // Find the position of the next "',"
-            iNext = commandLine.indexOf("',", iPosition) + 1;
+Caused by: com.ibm.mq.MQException: JMSCMQ0001: IBM MQ call failed with compcode '2' ('MQCC_FAILED') reason '2009' ('MQRC_CONNECTION_BROKEN').       
 
-            // Check if iNext is greater than iPosition
-            if (iNext > iPosition) {
-                iNext = iNext + 3;
-
-                // Extract 2 characters from this position
-                if (iNext + 2 <= commandLine.length()) {
-                    sNonMon = commandLine.substring(iNext, iNext + 2);
-
-                    // Check if the last character of sNonMon is a "'"
-                    if (sNonMon.endsWith("'")) {
-                        sNonMon = sNonMon.substring(0, 1);
-                    }
-                }
-            }
-        }
-        return sNonMon;
-    }
-}
-
+        at com.ibm.msg.client.jakarta.wmq.common.internal.Reason.createException(Reason.java:203)
+ 
+Caused by: com.ibm.msg.client.jakarta.jms.DetailedJMSException: JMSWMQ0018: Failed to connect to queue manager 'MI_OQA02' with connection mode 'Client' and host name 'a1qvap1038.1dc.com(1414)'.
+ 
