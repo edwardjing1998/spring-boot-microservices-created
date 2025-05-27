@@ -322,6 +322,34 @@ Resp
 
 
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
+import org.springframework.jms.core.JmsTemplate;
+
+@Bean
+public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactory(MQQueueConnectionFactory mqFactory) {
+    UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
+    adapter.setTargetConnectionFactory(mqFactory);
+    adapter.setUsername("yourUsername");  // Replace with your MQ username
+    adapter.setPassword("yourPassword");  // Replace with your MQ password
+    return adapter;
+}
+
+@Bean
+public JmsTemplate jmsTemplate(UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactory) {
+    return new JmsTemplate(userCredentialsConnectionFactory);
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
