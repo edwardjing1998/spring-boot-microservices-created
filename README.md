@@ -184,6 +184,94 @@ public class MqConfig {
 
 
 
+package admin.config;
+
+import com.ibm.mq.jms.MQQueueConnectionFactory;
+import com.ibm.msg.client.wmq.WMQConstants;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class MqConfig {
+
+    @Bean
+    public ConnectionFactory mqConnectionFactory() throws JMSException, javax.jms.JMSException {
+        MQQueueConnectionFactory factory = new MQQueueConnectionFactory();
+        factory.setHostName("odsmq-qao-oma.1dc.com");
+        factory.setPort(1414);
+        factory.setQueueManager("MI_OQA01");
+        factory.setChannel("RAPIDODS.SVRCONN");
+        factory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
+        return (ConnectionFactory) factory;
+    }
+}
+
+
+
+2025-05-27T17:54:46.647-05:00  INFO 37752 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-05-27T17:54:46.670-05:00 ERROR 37752 --- [           main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'mqConnectionFactory' defined in class path resource [admin/config/MqConfig.class]: Failed to
+ instantiate [jakarta.jms.ConnectionFactory]: Factory method 'mqConnectionFactory' threw exception with message: class com.ibm.mq.jms.MQQueueConnectionFactory cannot be cast to class jakarta.jms.ConnectionFactory (com.ibm.mq.jms.MQQueueConnectionFactory and jakarta.jms.ConnectionFactory are in unnamed module of loader 'app')
+        at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:489) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1361) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1191) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563) ~[spring-beans-6.2.3.jar:6.2.3]   
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.3.jar:6.2.3]     
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:346) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1155) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1121) ~[spring-beans-6.2.3.jar:6.2.3]       
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1056) ~[spring-beans-6.2.3.jar:6.2.3]      
+        at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:987) ~[spring-context-6.2.3.jar:6.2.3]    
+        at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.3.jar:6.2.3]
+        at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.3.jar:3.4.3]      
+        at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.3.jar:3.4.3]
+        at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.3.jar:3.4.3]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.3.jar:3.4.3]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.3.jar:3.4.3]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.3.jar:3.4.3]
+        at admin.RapidAdminApplication.main(RapidAdminApplication.java:12) ~[classes/:na]
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [jakarta.jms.ConnectionFactory]: Factory method 'mqConnectionFactory' threw exception with me
+ssage: class com.ibm.mq.jms.MQQueueConnectionFactory cannot be cast to class jakarta.jms.ConnectionFactory (com.ibm.mq.jms.MQQueueConnectionFactory and jakarta.jms.ConnectionFactory are in unnamed module of loader 'app')
+        at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:199) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:88) ~[spring-beans-6.2.3.jar:6.2.3]  
+        at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:168) ~[spring-beans-6.2.3.jar:6.2.3]
+        at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-6.2.3.jar:6.2.3]
+        ... 21 common frames omitted
+Caused by: java.lang.ClassCastException: class com.ibm.mq.jms.MQQueueConnectionFactory cannot be cast to class jakarta.jms.ConnectionFactory (com.ibm.mq.jms.MQQueueConnectionFactory and jakarta.jms.ConnectionFactory are in unnamed module of loader 'app')
+        at admin.config.MqConfig.mqConnectionFactory(MqConfig.java:21) ~[classes/:na]
+        at admin.config.MqConfig$$SpringCGLIB$$0.CGLIB$mqConnectionFactory$0(<generated>) ~[classes/:na]
+        at admin.config.MqConfig$$SpringCGLIB$$FastClass$$1.invoke(<generated>) ~[classes/:na]
+        at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258) ~[spring-core-6.2.3.jar:6.2.3]
+        at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:372) ~[spring-context-6.2.3.jar:6.2.3] 
+        at admin.config.MqConfig$$SpringCGLIB$$0.mqConnectionFactory(<generated>) ~[classes/:na]
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+        at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:171) ~[spring-beans-6.2.3.jar:6.2.3]
+        ... 24 common frames omitted
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  26.229 s
+[INFO] Finished at: 2025-05-27T17:54:46-05:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.4.3:run (default-cli) on project admin: Process terminated with exit code: 1 -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+PS C:\Users\F2LIPBX\spring_boot\2025-04-12\RAPIDadmin-microservices-java> 
 
 
 
