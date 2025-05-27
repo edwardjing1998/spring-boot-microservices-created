@@ -141,6 +141,49 @@ public class MqConfig {
 
 
 
+package admin.config;
+
+import com.ibm.mq.jms.MQQueueConnectionFactory;
+import com.ibm.msg.client.wmq.WMQConstants;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.annotation.EnableJms;
+import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
+import org.springframework.jms.core.JmsTemplate;
+
+import javax.jms.ConnectionFactory;
+
+@Configuration
+@EnableJms
+public class MqConfig {
+
+    @Bean
+    public ConnectionFactory mqConnectionFactory() throws Exception {
+        MQQueueConnectionFactory mqFactory = new MQQueueConnectionFactory();
+        mqFactory.setHostName("odsmq-qao-oma.1dc.com"); // Your server
+        mqFactory.setPort(1414);                        // Port
+        mqFactory.setQueueManager("MI_OQA01");          // Use appropriate Queue Manager
+        mqFactory.setChannel("RAPIDODS.SVRCONN");       // Channel
+        mqFactory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
+
+        // Optional user credentials (if needed)
+        UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
+        adapter.setTargetConnectionFactory(mqFactory);
+        adapter.setUsername("dsfraud");                // Provided User
+        adapter.setPassword("");                      // Password if needed (empty here)
+        return adapter;
+    }
+
+    @Bean
+    public JmsTemplate jmsTemplate() throws Exception {
+        JmsTemplate template = new JmsTemplate(mqConnectionFactory());
+        template.setDefaultDestinationName("RAPIDODS.RQST.OCYCLE.QUEUE"); // Request Queue
+        return template;
+    }
+}
+
+
+
 
 
 
