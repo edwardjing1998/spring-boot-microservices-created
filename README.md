@@ -65,6 +65,12 @@ Caused by: com.ibm.msg.client.jakarta.jms.DetailedJMSException: JMSWMQ0018: Fail
 
 
 
+SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE COLUMN_NAME = 'sys_prin'
+ORDER BY TABLE_SCHEMA, TABLE_NAME;
+
+
 
 
 
