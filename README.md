@@ -89,4 +89,22 @@ Test-NetConnection -ComputerName odsmq-qao-oma.1dc.com -Port 1414
 AAA.
 
 
+<dependency>
+    <groupId>com.ibm.mq</groupId>
+    <artifactId>com.ibm.mq.allclient</artifactId>
+    <version>9.3.4.0</version> <!-- Or compatible with your MQ version 8.0.0.4 -->
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jms</artifactId>
+</dependency>
+
+
+
+
+
+
+
+
+
 
