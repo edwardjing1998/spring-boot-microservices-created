@@ -37,5 +37,13 @@ Test-NetConnection -ComputerName a1qvap1038.1dc.com -Port 1414
 nc -vz a1qvap1038.1dc.com 1414
 
 
+Test-NetConnection -ComputerName a1qvap1038.1dc.com -Port 1414                                                                                                                                                                                                                                                                                     ComputerName     : a1qvap1038.1dc.com
+RemoteAddress    : 100.64.1.77
+RemotePort       : 1414
+InterfaceAlias   : Wi-Fi
+SourceAddress    : 192.168.1.152
+TcpTestSucceeded : True
+
+
 
 
