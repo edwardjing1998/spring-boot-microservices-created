@@ -278,6 +278,47 @@ PS C:\Users\F2LIPBX\spring_boot\2025-04-12\RAPIDadmin-microservices-java>
 
 
 
+package admin.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+public class MqTestController {
+
+    private final ConnectionFactory connectionFactory;
+
+    public MqTestController(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
+
+    @GetMapping("/api/test-mq")
+    public Map<String, String> testMqConnection() {
+        Map<String, String> response = new HashMap<>();
+        try (Connection connection = connectionFactory.createConnection()) {
+            connection.start();
+            response.put("status", "success");
+            response.put("message", "✅ Successfully connected to IBM MQ.");
+        } catch (JMSException e) {
+            response.put("status", "failure");
+            response.put("message", "❌ Failed to connect to IBM MQ: " + e.getMessage());
+        }
+        return response;
+    }
+}
+
+
+
+
+
+
+
 
 
 
