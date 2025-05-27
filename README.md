@@ -314,7 +314,11 @@ public class MqTestController {
 }
 
 
-
+{
+  "message": "❌ Failed to connect to IBM MQ: JMSWMQ0018: Failed to connect to queue manager 'MI_OQA01' with connection mode 'Client' and host name 'odsmq-qao-oma.1dc.com(1414)'.",
+  "status": "failure"
+}
+Resp
 
 
 
