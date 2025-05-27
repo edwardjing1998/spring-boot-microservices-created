@@ -81,6 +81,8 @@ IBM MQ	Cluster	O-CYCLE	a1qvap1038	10.180.150.152	1414	MI_OQA02 	ODSO	Dev	TPAM	8.
 IBM MQ	Cluster	O-CYCLE	a3qvap1010	10.174.148.189	1414	MI_CQA01	ODSO	Dev	TPAM	8.0.0.4
 IBM MQ	Cluster	O-CYCLE	a3qvap1012	10.174.148.192	1414	MI_CQA02	ODSO	Dev	TPAM	8.0.0.4
 
+QueueManager=;Server=odsmq-qao-oma.1dc.com(1414);Channel=RAPIDODS.SVRCONN;RequestQueue=RAPIDODS.RQST.OCYCLE.QUEUE;ReplyQueue=RAPIDODS.REPLY.MQAJ.QUEUE;User=dsfraud;Password=;
+
 
 Test-NetConnection -ComputerName odsmq-qao-oma.1dc.com -Port 1414
 
