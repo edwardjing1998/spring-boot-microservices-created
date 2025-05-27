@@ -23,3 +23,19 @@ Caused by: com.ibm.mq.MQException: JMSCMQ0001: IBM MQ call failed with compcode 
 Caused by: com.ibm.msg.client.jakarta.jms.DetailedJMSException: JMSWMQ0018: Failed to connect to queue manager 'MI_OQA02' with connection mode 'Client' and host name 'a1qvap1038.1dc.com(1414)'.
  
 telnet a1qvap1038.1dc.com 1414
+
+
+Test-NetConnection -ComputerName a1qvap1038.1dc.com -Port 1414
+
+Test-NetConnection -ComputerName a1qvap1038.1dc.com -Port 1414
+
+netstat -an | grep 1414
+telnet a1qvap1038.1dc.com 1414
+
+Test-NetConnection -ComputerName a1qvap1038.1dc.com -Port 1414
+
+nc -vz a1qvap1038.1dc.com 1414
+
+
+
+
