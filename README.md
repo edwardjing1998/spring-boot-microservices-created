@@ -387,6 +387,50 @@ public class MqConfig {
 
 
 
+package admin.config;
+
+import com.ibm.mq.jms.MQConnectionFactory;
+import com.ibm.msg.client.wmq.WMQConstants;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
+import org.springframework.jms.core.JmsTemplate;
+
+@Configuration
+public class MqConfig {
+
+    @Bean
+    public ConnectionFactory mqConnectionFactory() throws JMSException {
+        MQConnectionFactory factory = new MQConnectionFactory();  // Use MQConnectionFactory instead of MQQueueConnectionFactory
+        factory.setHostName("odsmq-qao-oma.1dc.com");
+        factory.setPort(1414);
+        factory.setQueueManager("MI_OQA02");
+        factory.setChannel("RAPIDODS.SVRCONN");
+        factory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
+        return factory;
+    }
+
+    @Bean
+    public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactory(ConnectionFactory mqFactory) {
+        UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
+        adapter.setTargetConnectionFactory(mqFactory);
+        adapter.setUsername("yourUsername");  // Replace with actual MQ username
+        adapter.setPassword("yourPassword");  // Replace with actual MQ password
+        return adapter;
+    }
+
+    @Bean
+    public JmsTemplate jmsTemplate(UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactory) {
+        return new JmsTemplate(userCredentialsConnectionFactory);
+    }
+}
+
+
+
+
+
 
 
 
