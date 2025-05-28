@@ -430,6 +430,68 @@ public class MqConfig {
 
 
 
+ng 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-27T19:01:28.935-05:00  INFO 26236 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+        Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+        Database driver: undefined/unknown
+        Database version: 10.0
+        Autocommit mode: undefined/unknown
+        Isolation level: undefined/unknown
+        Minimum pool size: undefined/unknown
+        Maximum pool size: undefined/unknown
+2025-05-27T19:01:30.734-05:00  INFO 26236 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-27T19:01:30.737-05:00  INFO 26236 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'      
+2025-05-27T19:01:31.299-05:00  INFO 26236 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+Hibernate: select c1_0.client,c1_0.name from clients c1_0
+Lucene indexing completed. Total indexed: 988
+2025-05-27T19:01:35.504-05:00  WARN 26236 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh 
+attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'userCredentialsConnectionFactory' defined in class path resource [admin/co
+nfig/MqConfig.class]: Unsatisfied dependency expressed through method 'userCredentialsConnectionFactory' parameter 0: Error creating bean with name 'userCredentialsConnectionFactory': Requested bean is currently in creation: Is there an unresolvable circular reference or an asynchronous initialization dependency?
+2025-05-27T19:01:35.507-05:00  INFO 26236 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-27T19:01:35.511-05:00  INFO 26236 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-27T19:01:36.311-05:00  INFO 26236 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-05-27T19:01:36.313-05:00  INFO 26236 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2025-05-27T19:01:36.327-05:00  INFO 26236 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-05-27T19:01:36.345-05:00 ERROR 26236 --- [           main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The dependencies of some of the beans in the application context form a cycle:
+
+ΓöîΓöÇΓöÇ->ΓöÇΓöÇΓöÉ
+|  userCredentialsConnectionFactory defined in class path resource [admin/config/MqConfig.class]
+ΓööΓöÇΓöÇ<-ΓöÇΓöÇΓöÿ
+
+
+Action:
+
+Relying upon circular references is discouraged and they are prohibited by default. Update your application to remove the dependency cycle between beans. As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  29.501 s
+[INFO] Finished at: 2025-05-27T19:01:36-05:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.4.3:run (default-cli) on project admin: Process terminated with exit code: 1 -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+PS C:\Users\F2LIPBX\spring_boot\2025-04-12\RAPIDadmin-microservices-java> 
+
+
+
+
+
 
 
 
