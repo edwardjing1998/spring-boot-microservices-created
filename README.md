@@ -492,6 +492,43 @@ PS C:\Users\F2LIPBX\spring_boot\2025-04-12\RAPIDadmin-microservices-java>
 
 
 
+package admin.config;
+
+import com.ibm.mq.jms.MQConnectionFactory;
+import com.ibm.msg.client.wmq.WMQConstants;
+import jakarta.jms.ConnectionFactory; // Use jakarta.jms if using Spring Boot 3.4.x
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.core.JmsTemplate;
+
+@Configuration
+public class MqConfig {
+
+    @Bean
+    public ConnectionFactory mqConnectionFactory() throws Exception {
+        MQConnectionFactory factory = new MQConnectionFactory();
+        factory.setHostName("odsmq-qao-oma.1dc.com");
+        factory.setPort(1414);
+        factory.setQueueManager("MI_OQA02");  // Use the correct QM
+        factory.setChannel("RAPIDODS.SVRCONN");
+        factory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
+        
+        // If using user/pass, set them here
+        factory.setStringProperty(WMQConstants.USERID, "dsfraud");
+        factory.setStringProperty(WMQConstants.PASSWORD, ""); // Add password if required
+
+        return factory;
+    }
+
+    @Bean
+    public JmsTemplate jmsTemplate(ConnectionFactory connectionFactory) {
+        return new JmsTemplate(connectionFactory);
+    }
+}
+
+
+
+
 
 
 
