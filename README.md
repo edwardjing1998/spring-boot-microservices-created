@@ -27,6 +27,12 @@ ftp_filetype	char	YES	1
 
 "sSQL = "SELECT Vend_id, Vend_nm, Vend_rcvr_cd, Vend_fsrv_nm, Vend_fsrv_ip" _ & " FROM VENDOR WHERE VEND_ACTV_CD = 1 and Vend_file_IO ='" & Trim$(sFile) & "'" " is for FilesentTo or FileSentFrom ?
 
+vendor_sent_to
+
+sys_prin	char	NO	8
+vend_id	char	NO	3
+queformail_cd	bit	NO	NULL
+
 
 
 
