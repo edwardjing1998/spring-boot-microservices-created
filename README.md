@@ -35,6 +35,15 @@ queformail_cd	bit	NO	NULL
 
 
 
+The Experience layer is where you expose your application (controllers, DTOs, HTTP, GraphQL, WebSockets).
+
+
+
+
+
+
+
+
 
 
 
