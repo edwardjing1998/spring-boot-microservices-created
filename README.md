@@ -26,3 +26,7 @@
         with:
           name: effective-pom
           path: effective.xml
+
+
+          rm -rf ~/.m2/repository/org/apache/tomcat/embed
+
