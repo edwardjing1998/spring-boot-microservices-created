@@ -149,4 +149,15 @@ grep -n "<tomcat-embed-core" -A1 effective.xml
 grep -n "<tomcat.version>"    -A0 effective.xml   # 是否有屬性覆寫
 
 
+ grep -n "<tomcat-embed-core" -A1 effective.xml    
+grep : The term 'grep' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify 
+that the path is correct and try again.
+At line:1 char:1
++ grep -n "<tomcat-embed-core" -A1 effective.xml
++ ~~~~
+    + CategoryInfo          : ObjectNotFound: (grep:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+
+
 
