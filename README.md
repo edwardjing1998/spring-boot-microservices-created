@@ -129,3 +129,11 @@
 	</build>
 
 </project>
+
+
+mvn -q help:effective-pom -Doutput=effective.xml
+grep -n "<tomcat-embed-core" -A1 effective.xml
+grep -n "<tomcat.version>"    -A0 effective.xml   # 是否有屬性覆寫
+
+
+
