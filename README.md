@@ -23,3 +23,9 @@ mvn dependency:tree \
     -Dverbose
 
 
+
+    ----------->>> REQUESTED ITEM IS QUARANTINED -------------------->>> FOR DETAILS SEE ------>>> https://sonatype.fiserv.one/ui/links/malware-defense/repositories/quarantinedComponent/OTIwNjk3NWQwZWJhNDRjZDllYWE5NzA1MDJkYzRmMTY <<<------ (403)
+6718Error: dependency: org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.36 (compile)
+6719Error: 	Could not transfer artifact org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.36 from/to Nexus (https://nexus-dev.onefiserv.net/repository/mvn-gl-flume-public-group/): status code: 403, reason phrase: -------------------->>> REQUESTED ITEM IS QUARANTINED ---
+
+
