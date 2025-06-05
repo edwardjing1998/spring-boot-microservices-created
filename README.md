@@ -1,127 +1,21 @@
-package admin.config.data;
-
-import admin.model.*;
-import admin.repository.*;
-import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-@Component
-@Profile("local")
-public class DeletedCaseTransactionsDataGenerator {
-
-    private static final Logger logger = LoggerFactory.getLogger(DeletedCaseTransactionsDataGenerator.class);
-    private final DeletedTransactionRepository deletedTransRepository;
-    private final DeletedAccountTransactionRepository accountTransactionRepository;
-    private final DeletedCaseRepository caseRepository;
-
-    public DeletedCaseTransactionsDataGenerator(DeletedTransactionRepository deletedTransRepository,
-                                                DeletedAccountTransactionRepository accountTransactionRepository,
-                                                DeletedCaseRepository caseRepository) {
-        this.deletedTransRepository = deletedTransRepository;
-        this.accountTransactionRepository = accountTransactionRepository;
-        this.caseRepository = caseRepository;
-    }
-
-    @PostConstruct
-    public void generateData() {
-        List<String> commandLines = List.of(
-                "EXECUTE FRPC 'CUSTOMER_UPDATE', '', @ADDR_CNTN_LINE_ONE_TX='6855 PACIFIC STREET', @ADDR_CNTN_LINE_TWO_TX='', @CITY_NM='OMAHA', @ADDR_SBDV_ONE_TX='NE', @PSTL_CD='68106'",
-                "EXECUTE FRPC 'CONTACT_HISTORY_ADD', '5480302000296846', 'RAPID', '', '', 'RRD PI:5480303000546412 1 card(s) placed in research.  '",
-                "EXECUTE FRPC 'CUSTOMER_UPDATE', 'C12360110239771782028053', @ADDR_CNTN_LINE_ONE_TX='2000 N LAUDERDALE AVE APT 106', @ADDR_CNTN_LINE_TWO_TX='', @CITY_NM='TAMPA', @ADDR_SBDV_ONE_TX='FL', @PSTL_CD='33608-4771'",
-                "EXEC FRPC 'CNONMON','4470431112096227','698','00',,'BLL1','F',,,,,,,'4543 KNOLLCROFT ROAD',' ',,,'TROTWOOD','OH','USA','45426-1936',,,,,'P',,,,,'U'"
-        );
-
-        List<DeletedTransaction> sampleData = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
-            String caseNum = String.format("CASE%03d", i);
-            String cycle = String.valueOf((char) ('A' + (i % 26)));
-
-            String randomCommand = commandLines.get(new java.util.Random().nextInt(commandLines.size()));
-
-            sampleData.add(createEntry(caseNum, new BigDecimal(1000 + i), LocalDateTime.now().minusHours(i),
-                    (short) (i % 5 + 1), randomCommand, "OS" + i, (i % 3), cycle));
-        }
-
-        deletedTransRepository.saveAll(sampleData);
-        logger.info("✅ Inserted sample DeletedTransaction records.");
-
-        for (DeletedTransaction ft : sampleData) {
-            DeletedCase caseEntity = caseRepository.findById(ft.getId().getCaseNumber()).orElse(null);
-            if (caseEntity == null) {
-                caseEntity = new DeletedCase();
-                caseEntity.setCaseNumber(ft.getId().getCaseNumber());
-                caseEntity.setActive(true);
-                caseEntity.setFirstName("John");
-                caseEntity.setLastName("Doe");
-                caseEntity.setAccount("ACC" + ft.getCycle());
-                caseEntity.setPiId("PI" + ft.getCycle());
-                caseEntity.setPrimaryPiId("PPI" + ft.getCycle());
-                caseEntity.setHomePhone("5551234567");
-                caseEntity.setWorkPhone("5559876543");
-                caseEntity.setSysPrin("SP001");
-                caseEntity.setCycle(String.valueOf(ft.getCycle().charAt(0)));
-                caseEntity.setStatus("A");
-                caseEntity.setInDate(LocalDateTime.now().minusDays(1));
-                caseEntity.setNextDate(LocalDateTime.now().plusDays(1));
-                caseEntity.setOutDate(LocalDateTime.now());
-
-                caseRepository.save(caseEntity);
-            }
-            for(int k = 0; k <= 3; k++) {
-                DeletedAccountTransaction tx = new DeletedAccountTransaction();
-
-                LocalDateTime currentDateTime = LocalDateTime.now();
-                DeletedAccountTransactionId txId = new DeletedAccountTransactionId(
-                        ft.getId().getCaseNumber(),
-                        ft.getId().getTransNo(),
-                        currentDateTime
-                );
-
-                tx.setId(txId);
-                tx.setCaseEntity(caseEntity);
-                tx.setPiId("PI" + ft.getCycle());
-                tx.setAccount(caseEntity.getAccount());
-                tx.setActionId("ACT");
-                tx.setUid("user123");
-                tx.setDocumentNo("DOC" + ft.getCycle());
-                tx.setSysPrin("SP001");
-                tx.setNoCards(1);
-                tx.setActionReason("Reason for " + ft.getCycle() + " " + k);
-                tx.setOperatorTime(120);
-                tx.setWorkstationName("WS-1");
-                tx.setPostageCategoryCd((short) 1);
-                accountTransactionRepository.save(tx);
-            }
-        }
-
-        logger.info("✅ Inserted sample DELETED_ACCOUNT_TRANS records.");
-    }
-
-
-    private DeletedTransaction createEntry(String caseNumber,
-                                           BigDecimal transNo,
-                                           LocalDateTime dateTime,
-                                           Short type,
-                                           String commandLine,
-                                           String systemType,
-                                           Integer retryCount,
-                                           String cycle) {
-        DeletedTransactionId id = new DeletedTransactionId(caseNumber, transNo, dateTime);
-        DeletedTransaction ft = new DeletedTransaction();
-        ft.setId(id);
-        ft.setType(type);
-        ft.setCommandLine(commandLine);
-        ft.setSystemType(systemType);
-        ft.setRetryCount(retryCount);
-        ft.setCycle(cycle);
-        return ft;
-    }
-}
+[INFO] --- surefire:3.2.2:test (default-test) @ admin ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- jar:3.3.0:jar (default-jar) @ admin ---
+Downloading from Nexus: https://nexus-dev.onefiserv.net/repository/mvn-gl-flume-public-group/org/codehaus/plexus/plexus-archiver/4.4.0/plexus-archiver-4.4.0.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  12.032 s
+[INFO] Finished at: 2025-06-05T14:26:27-05:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-jar-plugin:3.3.0:jar (default-jar) on project admin: Execution default-jar of goal org.apache.maven.plugins:maven-jar-
+plugin:3.3.0:jar failed: Plugin org.apache.maven.plugins:maven-jar-plugin:3.3.0 or one of its dependencies could not be resolved: The following artifacts could not be resolved: org
+.codehaus.plexus:plexus-archiver:jar:4.4.0 (absent): Could not transfer artifact org.codehaus.plexus:plexus-archiver:jar:4.4.0 from/to Nexus (https://nexus-dev.onefiserv.net/repository/mvn-gl-flume-public-group/): status code: 401, reason phrase: Unauthorized (401) -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginResolutionException
+PS C:\Users\F2LIPBX\spring_boot\2025-04-12\RAPIDadmin-microservices-java> 
