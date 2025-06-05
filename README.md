@@ -15,3 +15,11 @@
 
     mvn dependency:tree -Dincludes=org.apache.tomcat.embed:tomcat-embed-core
 
+
+
+    # run from the folder that has pom.xml
+mvn dependency:tree \
+    -Dincludes=org.springframework.boot:spring-boot-starter-web \
+    -Dverbose
+
+
