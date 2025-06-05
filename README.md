@@ -148,3 +148,11 @@
   -->
 
 </project>
+
+
+- name: Dump effective POM
+  run: mvn -q help:effective-pom -Doutput=effective.xml
+
+- name: Grep tomcat version
+  run: grep -n "<tomcat-embed-core" -A1 effective.xml || true
+
