@@ -1,91 +1,131 @@
-# This workflow will build a Maven project and 
-# upload the artifact to Nexus Repository
-# 
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-name: Build Maven Project
-on:
-  push:
-    # It is recommended to build from a single integration branch such as main.
-    # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow
-    branches:
-      - rapid-admin-j
-  pull_request:
-    # branches: 
-    #   - main
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.4.3</version> <!-- ✅ Use stable version -->
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
 
-  # Defining inputs for manually triggered workflows - https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow#defining-inputs-for-manually-triggered-workflows
-  workflow_dispatch:
-jobs:
-  ci-workflow:
-    # Do not change. This is the reusable workflow to build the maven project
-    uses: fiserv/flume-reuseable-workflows/.github/workflows/maven.yml@main
-    # Do not change. This enables to inherit common secrets from the organization settings
-    secrets: inherit
-    with:
-      # --- REQUIRED PARAMETERS --- 
-      # APM Number for the application from AppMap
-      apm: APM0001099 
+	<groupId>admin</groupId>
+	<artifactId>admin</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>admin</name>
+	<description>Rapid Admin</description>
 
-      # Application Name. Overrides value in pom.xml
-      app_name: RAPIDadmin-microservices-java
-      # Application Version. Overrides value in pom.xml
-      app_version: 0.0.1-SNAPSHOT
-      # Append Build number to the version
-      # app_version: 1.0.${{ github.run_number }}-SNAPSHOT
-      
-      # --- OPTIONAL PARAMETERS ---
-      # UAID of the application from CMDB
-      # uaid: 
-      
-      # A specific runner to build the project 
-      #build_runner_name: 'arc-scale-set'
-      
-      # Java Version for available version refer: 
-      # https://enterprise-confluence.onefiserv.net/display/BSDevOpsCOE/Maven+Builds#Supported%20Maven+&+Java+Versions
-      java_version: '21'
-      # Maven Version
-      # maven_version: '3.9.6'
-      
-      # By Default the workflow executes mvn test but if you want to run mvn verify please specify the test args to verify
-      # test_args: test
-      
-      # Publish Repostories can be updated to your target repositories
-      # nexus_snapshot_repo: mvn-gl-flume-public-snapshots
-      # nexus_release_repo: mvn-gl-flume-public-releases
+	<properties>
+		<java.version>21</java.version>
+	</properties>
 
-      # Enable or disable SonaQube Scans
-      # sonar_enable: true
-      # sonar_sourcepath: src/main/java
-      sonar_args: '-Dsonar.java.binaries=target'
-      
-      # Enable FOP
-      # fop_enable: true
+	<dependencies>
+		<!-- Exclude tomcat-embed-core -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 
-      # fop_application: If your FOP Application is not the same as your APM, please specify the FOP Application name
-      # fop_application:
+		<!-- Spring Data JPA -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
 
-      # fop_version: If your FOP Version is not the same as your App Version, please specify the FOP Version
-      # fop_version:
+		<!-- H2 In-Memory Database -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
-      # enable Sonatype
-      # sonatype_enable: true
+		<!-- Liquibase -->
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
 
-      # sonatype_application: If your Sonatype Application is not the same as your APM or FOP Application , please specify the Sonatype Application name
-      # sonatype_application:
+		<!-- ✅ Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.30</version> <!-- latest stable as of early 2025 -->
+			<scope>provided</scope>
+		</dependency>
 
-      # sonatype_version: If your Sonatype Version is not the same as your App Version or FOP Version, please specify the Sonatype Version
-      # sonatype_version:
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.2.0</version>
+		</dependency>
 
-      # publish artifact is set to false by default
-      # publish_artifact: true
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>12.10.0.jre11</version> <!-- Match the DLL version -->
+		</dependency>
 
-      # --- CONTAINERIZE ---
-      # The following fields only apply if the application needs to be built as a docker image
-      # The project should contain a Dockerfile
-      
-      # Image Name
-      # image_name: <ADD YOUR IMAGE NAME>
-      # Image Tags
-      # image_tag: ${{ github.run_number }}
+		<!-- Spring Boot Starter for caching -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
 
-      # PLEASE REFER https://enterprise-confluence.onefiserv.net/display/BSDevOpsCOE/Maven+Builds for all avalable parameters
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+		</dependency>
+
+		<!-- Caffeine cache library -->
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>8.11.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers-common</artifactId>
+			<version>8.11.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>8.11.4</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>
+				<configuration>
+					<release>21</release>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>3.4.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
