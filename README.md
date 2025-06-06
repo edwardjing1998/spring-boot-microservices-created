@@ -1,76 +1,75 @@
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+package admin.dto;
+
+import admin.model.AdminQueryList;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
 
 import java.time.LocalDateTime;
 
-@Getter
-@RequiredArgsConstructor               // ➊ ctor with args for every *final* field
-@NoArgsConstructor(force = true,       // ➋ zero-arg ctor for Jackson, values = null/0
-                   access = AccessLevel.PROTECTED)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AdminQueryListDTO {
 
-    private final Integer reportId;
-    private final String  queryName;
-    private final String  query;
-    private final String  inputDataFields;
-    private final String  fileExt;
-    private final String  dbDriverType;
-    private final Integer fileHeaderInd;
-    private final String  defaultFileNm;
-    private final String  reportDbServer;
-    private final String  reportDb;
-    private final String  reportDbUserid;
-    private final String  reportDbPasswrd;
-    private final Integer fileTransferType;
-    private final String  reportDbIpAndPort;
-    private final Boolean reportByClientFlag;
-    private final LocalDateTime rerunDateRangeStart;
-    private final LocalDateTime rerunDateRangeEnd;
-    private final String  rerunClientId;
-    private final String  emailFromAddress;
-    private final String  emailEventId;
-    private final Boolean tabDelimitedFlag;
-    private final String  inputFileTx;
-    private final Integer inputFileKeyStartPos;
-    private final Integer inputFileKeyLength;
-    private final Byte    accessLevel;
-    private final Boolean isActive;
-    private final Boolean isVisible;
-    private final Integer numSheets;
-
-    /** manual mapping constructor — delegates to the generated one */
-    public AdminQueryListDTO(AdminQueryList e) {
-        this(
-            e.getReportId(),
-            e.getQueryName(),
-            e.getQuery(),
-            e.getInputDataFields(),
-            e.getFileExt(),
-            e.getDbDriverType(),
-            e.getFileHeaderInd(),
-            e.getDefaultFileNm(),
-            e.getReportDbServer(),
-            e.getReportDb(),
-            e.getReportDbUserid(),
-            e.getReportDbPasswrd(),
-            e.getFileTransferType(),
-            e.getReportDbIpAndPort(),
-            e.getReportByClientFlag(),
-            e.getRerunDateRangeStart(),
-            e.getRerunDateRangeEnd(),
-            e.getRerunClientId(),
-            e.getEmailFromAddress(),
-            e.getEmailEventId(),
-            e.getTabDelimitedFlag(),
-            e.getInputFileTx(),
-            e.getInputFileKeyStartPos(),
-            e.getInputFileKeyLength(),
-            e.getAccessLevel(),
-            e.getIsActive(),
-            e.getIsVisible(),
-            e.getNumSheets()
-        );
+    public AdminQueryListDTO(AdminQueryList entity) {
+        this.reportId = entity.getReportId();
+        this.queryName = entity.getQueryName();
+        this.query = entity.getQuery();
+        this.inputDataFields = entity.getInputDataFields();
+        this.fileExt = entity.getFileExt();
+        this.dbDriverType = entity.getDbDriverType();
+        this.fileHeaderInd = entity.getFileHeaderInd();
+        this.defaultFileNm = entity.getDefaultFileNm();
+        this.reportDbServer = entity.getReportDbServer();
+        this.reportDb = entity.getReportDb();
+        this.reportDbUserid = entity.getReportDbUserid();
+        this.reportDbPasswrd = entity.getReportDbPasswrd();
+        this.fileTransferType = entity.getFileTransferType();
+        this.reportDbIpAndPort = entity.getReportDbIpAndPort();
+        this.reportByClientFlag = entity.getReportByClientFlag();
+        this.rerunDateRangeStart = entity.getRerunDateRangeStart();
+        this.rerunDateRangeEnd = entity.getRerunDateRangeEnd();
+        this.rerunClientId = entity.getRerunClientId();
+        this.emailFromAddress = entity.getEmailFromAddress();
+        this.emailEventId = entity.getEmailEventId();
+        this.tabDelimitedFlag = entity.getTabDelimitedFlag();
+        this.inputFileTx = entity.getInputFileTx();
+        this.inputFileKeyStartPos = entity.getInputFileKeyStartPos();
+        this.inputFileKeyLength = entity.getInputFileKeyLength();
+        this.accessLevel = entity.getAccessLevel();
+        this.isActive = entity.getIsActive();
+        this.isVisible = entity.getIsVisible();
+        this.numSheets = entity.getNumSheets();
     }
+
+
+    private  Integer reportId;
+    private  String queryName;
+    private  String query;
+    private  String inputDataFields;
+    private  String fileExt;
+    private String dbDriverType;
+    private Integer fileHeaderInd;
+    private String defaultFileNm;
+    private String reportDbServer;
+    private String reportDb;
+    private String reportDbUserid;
+    private String reportDbPasswrd;
+    private Integer fileTransferType;
+    private String reportDbIpAndPort;
+    private Boolean reportByClientFlag;
+    private LocalDateTime rerunDateRangeStart;
+    private LocalDateTime rerunDateRangeEnd;
+    private String rerunClientId;
+    private String emailFromAddress;
+    private String emailEventId;
+    private Boolean tabDelimitedFlag;
+    private String inputFileTx;
+    private Integer inputFileKeyStartPos;
+    private Integer inputFileKeyLength;
+    private Byte accessLevel;
+    private Boolean isActive;
+    private Boolean isVisible;
+    private Integer numSheets;
 }
