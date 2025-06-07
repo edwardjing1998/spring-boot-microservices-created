@@ -1,75 +1,158 @@
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-import java.time.LocalDateTime;
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.5.0</version>
+		<relativePath/>
+	</parent>
 
-@Getter
-@RequiredArgsConstructor
-@NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
-public class AdminQueryListDTO {
+	<groupId>admin</groupId>
+	<artifactId>admin</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>admin</name>
+	<description>Rapid Admin</description>
 
-    private final Integer     reportId;
-    private final String      queryName;
-    private final String      query;
-    private final String      inputDataFields;
-    private final String      fileExt;
-    private final String      dbDriverType;
-    private final Integer     fileHeaderInd;
-    private final String      defaultFileNm;
-    private final String      reportDbServer;
-    private final String      reportDb;
-    private final String      reportDbUserid;
-    private final String      reportDbPasswrd;
-    private final Integer     fileTransferType;
-    private final String      reportDbIpAndPort;
-    private final Boolean     reportByClientFlag;
-    private final LocalDateTime rerunDateRangeStart;
-    private final LocalDateTime rerunDateRangeEnd;
-    private final String      rerunClientId;
-    private final String      emailFromAddress;
-    private final String      emailEventId;
-    private final Boolean     tabDelimitedFlag;
-    private final String      inputFileTx;
-    private final Integer     inputFileKeyStartPos;
-    private final Integer     inputFileKeyLength;
-    private final Byte        accessLevel;
-    private final Boolean     isActive;
-    private final Boolean     isVisible;
-    private final Integer     numSheets;
+	<properties>
+		<java.version>21</java.version>
+		<mapstruct.version>1.5.5.Final</mapstruct.version>
+		<spring-boot.version>3.5.0</spring-boot.version>
+	</properties>
 
-    /** Factory method — the mapping logic lives here */
-    public static AdminQueryListDTO from(AdminQueryList e) {
-        return new AdminQueryListDTO(
-            e.getReportId(),
-            e.getQueryName(),
-            e.getQuery(),
-            e.getInputDataFields(),
-            e.getFileExt(),
-            e.getDbDriverType(),
-            e.getFileHeaderInd(),
-            e.getDefaultFileNm(),
-            e.getReportDbServer(),
-            e.getReportDb(),
-            e.getReportDbUserid(),
-            e.getReportDbPasswrd(),
-            e.getFileTransferType(),
-            e.getReportDbIpAndPort(),
-            e.getReportByClientFlag(),
-            e.getRerunDateRangeStart(),
-            e.getRerunDateRangeEnd(),
-            e.getRerunClientId(),
-            e.getEmailFromAddress(),
-            e.getEmailEventId(),
-            e.getTabDelimitedFlag(),
-            e.getInputFileTx(),
-            e.getInputFileKeyStartPos(),
-            e.getInputFileKeyLength(),
-            e.getAccessLevel(),
-            e.getIsActive(),
-            e.getIsVisible(),
-            e.getNumSheets()
-        );
-    }
-}
+	<dependencies>
+		<!-- Exclude tomcat-embed-core -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- Spring Data JPA -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!-- H2 In-Memory Database -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Liquibase -->
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
+
+		<!-- ✅ Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.30</version> <!-- latest stable as of early 2025 -->
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.8.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>12.10.0.jre11</version> <!-- Match the DLL version -->
+		</dependency>
+
+		<!-- Spring Boot Starter for caching -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
+		<!-- Caffeine cache library -->
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>8.11.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers-common</artifactId>
+			<version>8.11.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>8.11.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>${mapstruct.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>
+				<configuration>
+					<release>${java.version}</release>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>1.18.38</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${mapstruct.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>3.4.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
