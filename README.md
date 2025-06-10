@@ -89,3 +89,19 @@ jobs:
       # image_tag: ${{ github.run_number }}
 
       # PLEASE REFER https://enterprise-confluence.onefiserv.net/display/BSDevOpsCOE/Maven+Builds for all avalable parameters
+
+
+<properties>
+  <java.version>21</java.version>
+  <lombok.version>1.18.38</lombok.version>
+  <mapstruct.version>1.5.5.Final</mapstruct.version>
+  <lucene.version>8.11.2</lucene.version>
+  <!-- and any plugin versions too -->
+  <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+  <spring-boot-maven-plugin.version>3.4.3</spring-boot-maven-plugin.version>
+</properties>
+
+
+
+
+      
