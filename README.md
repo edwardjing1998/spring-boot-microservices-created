@@ -1,5 +1,2 @@
-@SpringBootApplication(scanBasePackages = {
-    "com.example.service",
-    "com.example.repository",
-    "com.example.controller"
-})
+List<dailyMessage> getDailyMessagesByMessageDateBetween(LocalDateTime start, LocalDateTime end , Pageable pageable);
+ 
