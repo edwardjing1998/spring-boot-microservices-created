@@ -3,9 +3,10 @@
 
 
 
-1) we already have the first round development of react UI pages and the new development should be based on previous development.
-2) we need to have sample data to be present on the page, otherwise, we do not know if the page meet into the requirement or not
-3)  we need to continue to work on these pages in next sprint.
+We have completed the first round of React UI page development. All subsequent development should build upon this existing foundation.
 
-   Next sprints, we will update each single page based on UX designs in the framework we have created in the first round development. the sample can be like the following page.
- 
+To ensure that each page meets the functional and design requirements, sample data must be presented on the pages. Without it, proper validation is not possible.
+
+Development will continue in the next sprint, where each page will be iteratively updated according to the latest UX designs, leveraging the framework established in the initial development phase.
+
+The following page can serve as a sample reference for the expected structure and integration.
