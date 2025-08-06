@@ -306,6 +306,15 @@
 [ERROR]   The project rapid-rapidreturn-hub:common-model:0.0.1-SNAPSHOT (C:\Users\F2LIPBX\spring_boot\RAPID-Rapid-microservices-Java\common-model\pom.xml) has 1 error
 [ERROR]     Non-resolvable parent POM for rapid-rapidreturn-hub:common-model:0.0.1-SNAPSHOT: The following artifacts could not be resolved: rapid-rapidreturn-hub:rapid-rapidreturn-hub:pom:0.0.1-SNAPSHOT (absent): Could not find artifact rapid-rapidreturn-hub:rapid-rapidreturn-hub:pom:0.0.1-SNAPSHOT in Nexus (https://nexus-dev.onefiserv.net/repository/mvn-gl-flume-public-group/) and 'parent.relativePath' points at wrong local POM @ line 8, column 13 -> [Help 2]
 
+ @
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]
+[ERROR]   The project rapid-rapidreturn-hub:common-api-dto:0.0.1-SNAPSHOT (C:\Users\F2LIPBX\spring_boot\RAPID-Rapid-microservices-Java\common-api-dto\pom.xml) has 1 error
+[ERROR]     Non-resolvable parent POM for rapid-rapidreturn-hub:common-api-dto:0.0.1-SNAPSHOT: The following artifacts could not be resolved: rapid-rapidreturn-hub:rapid-rapidreturn-hub:pom:0.0.1-SNAPSHOT (absent): rapid-rapidreturn-hub:rapid-rapidreturn-hub:pom:0.0.1-SNAPSHOT was not found in https://nexus-dev.onefiserv.net/repository/mvn-gl-flume-public-group/ during a previous attempt. This failure was cached in the local repository and resolution is not reattempted until the update interval of Nexus has elapsed or updates are forced and 'parent.relativePath' points at wrong local POM @ line 7, column 13 -> [Help 2]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+
 
 
 
