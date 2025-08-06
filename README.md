@@ -2,15 +2,15 @@ FROM fmk.nexus-ci.onefiserv.net/org/is/com.fiserv.issuer/fs-container-springboot
 
 USER root
 
-COPY app/*-SNAPSHOT.jar /app/
+# Copy the jar from the local build context (target folder)
+COPY target/admin-0.0.1-SNAPSHOT.jar /app/apprapid.jar
+
 RUN chgrp -R 0 /app && chmod -R g+rwX /app
 
 VOLUME ["/app"]
 WORKDIR /app
 
 USER 1001
-
-COPY /app/admin-0.0.*-SNAPSHOT.jar apprapid.jar
 
 ENTRYPOINT ["java", "-Xmx1G",
             "-Dreactor.netty.http.server.accessLogEnabled=true",
