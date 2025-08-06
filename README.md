@@ -301,5 +301,11 @@
 </project>
 
 
+[ERROR] The build could not read 9 projects -> [Help 1]
+[ERROR]
+[ERROR]   The project rapid-rapidreturn-hub:common-model:0.0.1-SNAPSHOT (C:\Users\F2LIPBX\spring_boot\RAPID-Rapid-microservices-Java\common-model\pom.xml) has 1 error
+[ERROR]     Non-resolvable parent POM for rapid-rapidreturn-hub:common-model:0.0.1-SNAPSHOT: The following artifacts could not be resolved: rapid-rapidreturn-hub:rapid-rapidreturn-hub:pom:0.0.1-SNAPSHOT (absent): Could not find artifact rapid-rapidreturn-hub:rapid-rapidreturn-hub:pom:0.0.1-SNAPSHOT in Nexus (https://nexus-dev.onefiserv.net/repository/mvn-gl-flume-public-group/) and 'parent.relativePath' points at wrong local POM @ line 8, column 13 -> [Help 2]
+
+
 
 
