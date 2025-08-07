@@ -1,66 +1,19 @@
-stages:
-  - build
-  - dockerize
+FROM fmk.nexus-ci.onefiserv.net/org/is/com.fiserv.issuer/fs-container-springboot-x86:3.0.8
 
-variables:
-  SERVICE_NAME: "admin"
-  SERVICE_VERSION: "0.0.1-SNAPSHOT"
-  JAR_NAME: "${SERVICE_NAME}-${SERVICE_VERSION}.jar"
-  DOCKER_IMAGE: "$CI_REGISTRY_IMAGE/${SERVICE_NAME}:${SERVICE_VERSION}"
+USER root
 
-build-admin:
-  stage: build
-  image: maven:3.9-eclipse-temurin-17
-  script:
-    - mvn clean install -DskipTests
-  artifacts:
-    paths:
-      - target/${JAR_NAME}
+ARG JAR_NAME
+COPY target/${JAR_NAME} /app/apprapid.jar
 
-dockerize-admin:
-  stage: dockerize
-  image: docker:latest
-  services:
-    - docker:dind
-  variables:
-    DOCKER_TLS_CERTDIR: ""
-  before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-  script:
-    - docker build --build-arg JAR_NAME=${JAR_NAME} -t $DOCKER_IMAGE -f docker/admin/Dockerfile .
-    - docker push $DOCKER_IMAGE
+RUN chgrp -R 0 /app && chmod -R g+rwX /app
 
+VOLUME ["/app"]
+WORKDIR /app
 
+USER 1001
 
-
-stages:
-  - build
-  - dockerize
-
-variables:
-  SERVICE_NAME: "admin"
-  SERVICE_VERSION: "0.0.1-SNAPSHOT"
-  JAR_NAME: "${SERVICE_NAME}-${SERVICE_VERSION}.jar"
-  DOCKER_IMAGE: "$CI_REGISTRY_IMAGE/${SERVICE_NAME}:${SERVICE_VERSION}"
-
-build-admin:
-  stage: build
-  image: maven:3.9-eclipse-temurin-17
-  script:
-    - mvn clean install -DskipTests
-  artifacts:
-    paths:
-      - target/${JAR_NAME}
-
-dockerize-admin:
-  stage: dockerize
-  image: docker:latest
-  services:
-    - docker:dind
-  variables:
-    DOCKER_TLS_CERTDIR: ""
-  before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-  script:
-    - docker build --build-arg JAR_NAME=${JAR_NAME} -t $DOCKER_IMAGE -f docker/admin/Dockerfile .
-    - docker push $DOCKER_IMAGE
+ENTRYPOINT ["java", "-Xmx1G",
+            "-Dreactor.netty.http.server.accessLogEnabled=true",
+            "-Djava.security.egd=file:/dev/./urandom",
+            "-Duser.timezone=America/Toronto",
+            "-jar", "/app/apprapid.jar"]
