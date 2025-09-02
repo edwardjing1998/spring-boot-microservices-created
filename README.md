@@ -1,48 +1,34 @@
-Hibernate: update clients set active=?,addr=?,amex_issued=?,billing_sp=?,chlookup_type=?,city=?,contact=?,exclude_from_report=?,fax_number=?,name=?,phone=?,positive_reports=?,report_break_flag=?,state=?,sub_client_ind=?,sub_client_xref=?,zip=? where client=?
-2025-09-01T20:25:39.452-05:00 ERROR 27276 --- [client-sysprin-writer] [0.0-8085-exec-3] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.orm.jpa.JpaSystemException: Duplicate identifier in table (clients) - rapid.model.client.Client#0007] with root cause
+	FOSM-27: Create GET API for Retrieving All Failed Transactions
+•	FOSM-36: Create GET API for Retrieving Cases Related to Transactions
+•	FOSM-26: Create GET API for Retrieving All Transactions for a Given Case
 
-org.hibernate.HibernateException: Duplicate identifier in table (clients) - rapid.model.client.Client#0007
-        at org.hibernate.engine.jdbc.mutation.internal.ModelMutationHelper.identifiedResultsCheck(ModelMutationHelper.java:81) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.persister.entity.mutation.UpdateCoordinatorStandard.lambda$doStaticUpdate$9(UpdateCoordinatorStandard.java:785) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.engine.jdbc.mutation.internal.ModelMutationHelper.checkResults(ModelMutationHelper.java:50) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.performNonBatchedMutation(AbstractMutationExecutor.java:141) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.engine.jdbc.mutation.internal.MutationExecutorSingleNonBatched.performNonBatchedOperations(MutationExecutorSingleNonBatched.java:55) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor.execute(AbstractMutationExecutor.java:55) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.persister.entity.mutation.UpdateCoordinatorStandard.doStaticUpdate(UpdateCoordinatorStandard.java:781) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.persister.entity.mutation.UpdateCoordinatorStandard.performUpdate(UpdateCoordinatorStandard.java:328) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.persister.entity.mutation.UpdateCoordinatorStandard.update(UpdateCoordinatorStandard.java:245) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.action.internal.EntityUpdateAction.execute(EntityUpdateAction.java:169) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:644) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:511) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:414) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:41) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.internal.SessionImpl.doFlush(SessionImpl.java:1429) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.internal.SessionImpl.managedFlush(SessionImpl.java:491) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.internal.SessionImpl.flushBeforeTransactionCompletion(SessionImpl.java:2354) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.internal.SessionImpl.beforeTransactionCompletion(SessionImpl.java:1978) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.beforeTransactionCompletion(JdbcCoordinatorImpl.java:439) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl.beforeCompletionCallback(JdbcResourceLocalTransactionCoordinatorImpl.java:169) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:267) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101) ~[hibernate-core-6.6.15.Final.jar:6.6.15.Final]
-        at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:562) ~[spring-orm-6.2.7.jar:6.2.7]
-        at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795) ~[spring-tx-6.2.7.jar:6.2.7]
-        at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758) ~[spring-tx-6.2.7.jar:6.2.7]
-        at org.springframework.transaction.interceptor.TransactionAspectSupport.commitTransactionAfterReturning(TransactionAspectSupport.java:698) ~[spring-tx-6.2.7.jar:6.2.7]
-        at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:416) ~[spring-tx-6.2.7.jar:6.2.7]
-        at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.7.jar:6.2.7]
-        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.7.jar:6.2.7]
-        at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.7.jar:6.2.7]
-        at rapid.service.client.ClientService$$SpringCGLIB$$0.updateClient(<generated>) ~[common-services-0.0.1-SNAPSHOT.jar:na]
-        at rapid.client.web.ClientWriterController.updateClient(ClientWriterController.java:28) ~[classes/:na]
-        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
-        at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
-        at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.7.jar:6.2.7]
-        at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.7.jar:6.2.7]
-        at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.7.jar:6.2.7]
-        at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.7.jar:6.2.7]
-        at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.7.jar:6.2.7]
-        at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.7.jar:6.2.7]
-        at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.7.jar:6.2.7]
-        at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.7.jar:6.2.7]
-        at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.7.jar:6.2.7]
+        1) it is in case service management application;
+        2) in service management application, it has case-reader and case writer modules;
+        3) these 3 user stories are used to retrieve case. transaction and failed transaction, and their controllers are created in reader    module.
+
+        4)  Failed Transactions, Cases and transactions has independent controllers, also it has independent services. it has mapper class to map dto and entity class.
+
+        5) dto and entity are organized in dto and model modules.
+
+        6) for these user stories, I create unit test cases and testing coverage reach 100%.
+
+
+
+•	FOSM-41: Create GET API for Managing SysPrin Details for a Client
+•	FOSM-34: Create GET API for Retrieving Client Details by Client ID
+•	FOSM-42: Create GET API for Finding SysPrin by Client ID and SysPrin Name
+	FOSM-29: Create GET API for Retrieving Clients Based on Page Number (Paging)
+
+•	FOSM-33: Create PUT API for Updating a Client
+
+      1) these 5 user stories is in client-sysprin application. for get api, it is in reader module. for different types of api, they have independent controller. also it has mapper, dto and models classes are organized in different modules.
+
+
+ 
+
+•	FOSM-90: Create GET API for Retrieving Clients Based on Wildcards
+
+
+last user story has used lucene technology, i organize it in a new module in search-integration module.
+
+i have tested all the user stories in dev environment. i have documented all the testing process. once after i format this document, i will share with terry to review.
