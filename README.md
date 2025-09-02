@@ -1,34 +1,81 @@
-	FOSM-27: Create GET API for Retrieving All Failed Transactions
-•	FOSM-36: Create GET API for Retrieving Cases Related to Transactions
-•	FOSM-26: Create GET API for Retrieving All Transactions for a Given Case
+✅ Case Service Management Application:
 
-        1) it is in case service management application;
-        2) in service management application, it has case-reader and case writer modules;
-        3) these 3 user stories are used to retrieve case. transaction and failed transaction, and their controllers are created in reader    module.
+User Stories:
 
-        4)  Failed Transactions, Cases and transactions has independent controllers, also it has independent services. it has mapper class to map dto and entity class.
+FOSM-27: Create GET API for retrieving all failed transactions.
 
-        5) dto and entity are organized in dto and model modules.
+FOSM-36: Create GET API for retrieving cases related to transactions.
 
-        6) for these user stories, I create unit test cases and testing coverage reach 100%.
+FOSM-26: Create GET API for retrieving all transactions for a given case.
 
+Key Points:
 
+These APIs are implemented in the case-service-management application.
 
-•	FOSM-41: Create GET API for Managing SysPrin Details for a Client
-•	FOSM-34: Create GET API for Retrieving Client Details by Client ID
-•	FOSM-42: Create GET API for Finding SysPrin by Client ID and SysPrin Name
-	FOSM-29: Create GET API for Retrieving Clients Based on Page Number (Paging)
+The application has two modules: case-reader and case-writer.
 
-•	FOSM-33: Create PUT API for Updating a Client
+Reader module → Contains all the newly created GET APIs for querying.
 
-      1) these 5 user stories is in client-sysprin application. for get api, it is in reader module. for different types of api, they have independent controller. also it has mapper, dto and models classes are organized in different modules.
+Each resource (Failed Transactions, Cases, Transactions) is managed with independent controllers and independent services, ensuring proper separation of concerns.
 
+DTOs and Entities are organized in dto and model modules respectively, and mappings are handled via dedicated mapper classes.
 
- 
-
-•	FOSM-90: Create GET API for Retrieving Clients Based on Wildcards
+Unit tests were written for each new API. Test coverage reached 100% for these stories.
 
 
-last user story has used lucene technology, i organize it in a new module in search-integration module.
+✅ Client-SysPrin Application
 
-i have tested all the user stories in dev environment. i have documented all the testing process. once after i format this document, i will share with terry to review.
+User Stories:
+
+FOSM-41: Create GET API for managing SysPrin details for a client.
+
+FOSM-34: Create GET API for retrieving client details by client ID.
+
+FOSM-42: Create GET API for finding SysPrin by client ID and SysPrin name.
+
+FOSM-29: Create GET API for retrieving clients based on page number (paging).
+
+FOSM-33: Create PUT API for updating a client.
+
+Key Points:
+
+These APIs are implemented in the client-sysprin application.
+
+Reader module → hosts all the GET APIs.
+
+Controllers are designed independently for each type of API (SysPrin, Client, etc.), promoting modularity and clarity.
+
+Service layer supports the controllers, with dedicated mapper classes handling DTO ↔ Entity transformations.
+
+DTOs and Entities are organized in their respective dto and model modules.
+
+Unit tests were created to validate functionality, with focus on correctness and coverage.
+
+✅ Search-Integration Module
+
+User Story:
+
+FOSM-90: Create GET API for retrieving clients based on wildcards.
+
+Key Points:
+
+This functionality leverages Lucene technology for flexible and efficient text-based searching.
+
+Due to its distinct nature, the wildcard search feature was implemented in a new module inside the search-integration project.
+
+Thorough testing was conducted to validate wildcard queries and edge cases.
+
+🔍 Testing & Documentation
+
+All user stories were deployed and tested in the development environment.
+
+Each API was verified against functional requirements (including edge cases).
+
+Unit test cases were written for all APIs, ensuring high reliability.
+
+Documentation of the testing process is complete.
+
+After formatting the test documentation, I will share it with Terry for review.
+
+
+
