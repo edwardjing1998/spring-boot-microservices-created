@@ -1,14 +1,23 @@
-UPDATE clients
-SET addr = 'New address'
-WHERE ROWID = (
-  SELECT ROWID
-  FROM clients
-  WHERE client = '0001'
-  FETCH FIRST 1 ROWS ONLY
-);
+git switch -c case-service-j --track origin/case-service-j
+git switch -c feature/service --track origin/feature/service
 
 
-Msg 156, Level 15, State 1, Line 29
-Incorrect syntax near the keyword 'FETCH'.
-Msg 153, Level 15, State 2, Line 29
-Invalid usage of the option FIRST in the FETCH statement.
+git switch case-service-j
+git pull --ff-only
+
+git switch feature/service
+git pull --ff-only
+
+
+
+git switch case-service-j
+git merge --no-ff feature/service
+
+
+git status               # see conflicted files
+# edit files to resolve conflicts
+git add <files-you-fixed>
+git commit               # completes the merge
+
+
+git push origin case-service-j
