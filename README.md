@@ -1,3 +1,200 @@
-i need to install "npm i @fortawesome/free-solid-svg-icons" and
-"npm i @fortawesome/fontawesome-svg-core @fortawesome/react-fontawesome
-" 
+react-dom_client.js?v=e8a8cd94:17987 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+LoadChFromCase.tsx:93 Uncaught TypeError: Cannot read properties of undefined (reading 'details')
+    at fetchCHinfoDetailsInfo (LoadChFromCase.tsx:93:84)
+    at fetchCHinfoDetailsInfo (react-redux.js?v=e8a8cd94:1021:28)
+    at memoizedSelector (react-redux.js?v=e8a8cd94:31:32)
+    at react-redux.js?v=e8a8cd94:51:24
+    at mountSyncExternalStore (react-dom_client.js?v=e8a8cd94:4550:26)
+    at Object.useSyncExternalStore (react-dom_client.js?v=e8a8cd94:16562:18)
+    at exports.useSyncExternalStore (chunk-HUL2CLQT.js?v=e8a8cd94:930:36)
+    at exports.useSyncExternalStoreWithSelector (react-redux.js?v=e8a8cd94:60:21)
+    at useSelector2 (react-redux.js?v=e8a8cd94:1076:85)
+    at AccountNumberComponent (AccountNumberComponent.tsx:30:21)
+fetchCHinfoDetailsInfo @ LoadChFromCase.tsx:93
+fetchCHinfoDetailsInfo @ react-redux.js?v=e8a8cd94:1021
+memoizedSelector @ react-redux.js?v=e8a8cd94:31
+(anonymous) @ react-redux.js?v=e8a8cd94:51
+mountSyncExternalStore @ react-dom_client.js?v=e8a8cd94:4550
+useSyncExternalStore @ react-dom_client.js?v=e8a8cd94:16562
+exports.useSyncExternalStore @ chunk-HUL2CLQT.js?v=e8a8cd94:930
+exports.useSyncExternalStoreWithSelector @ react-redux.js?v=e8a8cd94:60
+u
+    at P (chrome-extension://gofohnjbcabckdcbamaelhmppjoegikd/data/js/Verint.Validator.Content.js:1:1241)
+
+
+
+
+
+
+
+
+    const RapidApp = React.lazy(() => import('./rapid/Rapid/Onload/Components/AccountNumberComponent'))
+
+      { path: '/rapid/search-account', name: 'RapidApp', element: RapidApp },
+
+
+
+
+
+
+      import Header from "../../../HeaderComponent/Header";
+import Navbar from "../CommonComponent/SideNav";
+import SearchAccountNumber from "./SearchAccountNumber";
+import "../scss/main.scss";
+import FetchAccountDetails from "./FetchAccountDetails";
+import SimpleSnackbar from "../CommonComponent/snackBar";
+import { useSelector } from "react-redux";
+
+import { fetchCHinfoDetailsInfo } from "../../Redux/LoadChFromCase";
+import { fetchLabelTypeDetailsInfo } from "../../Redux/GetLabelType";
+import { useEffect, useState } from "react";
+import { fetchGetAmexInfo } from "../../Redux/GetAmexInfo";
+import { accountDetails } from "../../types/AccountDetailstype";
+import { LABEL_AMERICAN_EXPRESS } from "../../Constants/Constants";
+import { fetchCardTypeDetailsInfo } from "../../Redux/GetCardType";
+
+import { RetreieveAmexSysPrin } from "../CommonComponent/IntializeOnload";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../store";
+import { getIssuedByAmex } from "../../Redux/Case";
+import {
+  AccountInfo,
+  caseAccountInfo,
+} from "../CommonComponent/AccountInfoDetails";
+import { retrieveAddressDetails } from "../../Redux/FetchAddressDetails";
+import { fetchClientInfo } from "../../Redux/RetrieveSysPrin";
+
+const AccountNumberComponent = () => {
+  const labelType = useSelector(fetchLabelTypeDetailsInfo);
+  const chDetails = useSelector(fetchCHinfoDetailsInfo);
+  const cardType = useSelector(fetchCardTypeDetailsInfo);
+  const AmexDetails = useSelector(fetchGetAmexInfo);
+   
+  const dispatch = useDispatch<AppDispatch>();
+  const [accountInfo, setAccountInfo] = useState<accountDetails>({
+    details: {
+      caseNumber: "",
+      piId: "",
+      customerId: "",
+      primaryPiId: "",
+      account: "",
+      lastName: "",
+      firstName: "",
+      homePhone: "",
+      workPhone: "",
+      entityCode: "",
+      roleCode: "",
+      piStatus: "",
+      status: "",
+      active: 0,
+      reason: "",
+      subReason: null,
+      disposition: "",
+      inHour: "",
+      inDate: "",
+      nextDate: "",
+      outDate: "",
+      autoDate: "",
+      numCards: null,
+      finalActionCardsNr: null,
+      deliveryId: null,
+      sysPrin: "",
+      cycle: "",
+      firstUpdateVendId: "",
+      contactCode: "",
+      contactPhoneNumber: "",
+      returnReasonCode: "",
+      issuanceCode: "",
+      issuanceDate: "",
+      operatorCode: "",
+      barcodeTypeCode: "",
+      fileSent: "",
+      postageBilled: "",
+      issuedByAmex: 0,
+      recordTypeText: "",
+      serviceTypeText: "",
+      mailerId: "",
+      as400ClientId: "",
+      as400SystemId: "",
+      basicSupplementalId: "",
+      originalMailDate: "",
+      msgId: "",
+      mailMethod: "",
+      sourceFile: "",
+      custId: "",
+      msIssueDate: "",
+      custId2: "",
+      marketCode: "",
+      accountTokenId: "",
+      piIdTokenId: "",
+      primaryPiIdTokenId: "",
+    },
+   
+  });
+  //to check if data exist in db then retrieve logic
+  useEffect(() => {
+    if (
+      labelType?.result == LABEL_AMERICAN_EXPRESS &&
+      AmexDetails?.result !== "01"
+    ) {
+      setAccountInfo(AccountInfo(AmexDetails, cardType));
+      RetreieveAmexSysPrin(
+        AmexDetails?.bagID,
+        AmexDetails?.productCode,
+        true,
+        AmexDetails?.as400SystemId,
+        AmexDetails?.issueDate,
+        AmexDetails?.typeIssue,
+        dispatch
+      );
+      dispatch(getIssuedByAmex(1));
+
+    }
+  }, [AmexDetails]);
+
+  useEffect(() => {
+    if (labelType?.result !== LABEL_AMERICAN_EXPRESS) {
+      setAccountInfo(caseAccountInfo(chDetails, cardType));
+       dispatch(retrieveAddressDetails(chDetails?.caseNumber));
+    }
+    
+    dispatch(fetchClientInfo(chDetails?.sysPrin))
+    
+  }, [chDetails]);
+  return (
+    <div className="container">
+      <div>
+        <Header />
+      </div>
+      <div className="subcontainer">
+        <Navbar />
+        <div className="sub-container-main">
+          <div className="main-container">
+            <SearchAccountNumber details={accountInfo?.details} />
+            {accountInfo?.details?.account != "" && (
+              <FetchAccountDetails
+                details={accountInfo?.details}
+                // piIdAddress={accountInfo?.piIdAddress}
+                // primaryAddress={accountInfo?.primaryAddress}
+                clientId={accountInfo?.clientId}
+                CardType={cardType}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AccountNumberComponent;
+
+
+
+
+
+
+
+
+    
+
