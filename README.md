@@ -192,6 +192,72 @@ export default AccountNumberComponent;
 
 
 
+import { configureStore } from "@reduxjs/toolkit";
+import FetchNACMessageReducer from './Rapid/Redux/NACMessages'
+import RetreiveCaseDetails from './Rapid/Redux/SaveCaseRedux'
+import SubmitTransactiondataDetails from './Rapid/Redux/SaveNacTransaction'
+import PrintLabelreducer from './Rapid/Redux/PrintLabel'
+import CaseInfoReducer from './Rapid/Redux/Case'
+import transactReducer from './Rapid/Redux/SaveTransactionData'
+import TransactionNumberreducer from './Rapid/Redux/GetTransactionNumber'
+import GetAmexInfoDetails from './Rapid/Redux/GetAmexInfo'
+import FetchOpenCaseDetails from './Rapid/Redux/CheckForOpenCase'
+import GetFetchCardType from './Rapid/Redux/GetCardType'
+import GetFetchLabelType from './Rapid/Redux/GetLabelType'
+import RetrieveCaseInfo from './Rapid/Redux/LoadChFromCase'
+import ChSliceReducer from './Rapid/Redux/CardHolder'
+import FetchExisitingCardHolderInfo from './Rapid/Redux/FetchExisitingCase'
+import MailerReducer from './Rapid/Redux/RetrieveAs400MailerId'
+import GetControlInfoDetails from './Rapid/Redux/CardHolderInfo'
+import BulkCardReducer from './Rapid/Redux/insertBulkCard'
+import GetAdressDetailsReducer from './Rapid/Redux/FetchDetailsFromZip'
+import addressDetailsReducer from './Rapid/Redux/FetchAddressDetails'
+import sysPrinreducer from './Rapid/Redux/RetrieveSysPrin'
+import dispatchaddressDetailsReducer from './Rapid/Redux/dispatchAddressValues'
+import submitAddressDetailsReducer from './Rapid/Redux/SubmitAddressDetails'
+import fetchImbDetailsReducer from './Rapid/Redux/AccountDetailsRedux'
+import AccountTransactionTypeReducer from './Rapid/Redux/AccountTransaction'
+import fetchSpecialCaseMessagesReducer from './Rapid/Redux/SpecialCasesRedux'
+import ImbAccountDetailsReducer from './Rapid/Redux/IMBAccountDetailsRedux'
+import AudtiLogDetailesReducer from './Rapid/Redux/AuditLogApi'
+
+export const store= configureStore({
+    reducer:{
+        fetchNacMessageSlice:FetchNACMessageReducer,
+        retrieveCaseDetails:RetreiveCaseDetails,
+        retrieveTransactionDetails:SubmitTransactiondataDetails,
+        RetrieveLabelPrint:PrintLabelreducer,
+        CaseInfo:CaseInfoReducer,
+        transactionDetails:transactReducer,
+        getTransactionNumber:TransactionNumberreducer,
+        FetchForOpenCase:FetchOpenCaseDetails,
+        FetchCardHolderInfo:RetrieveCaseInfo,
+         fetchLabelTypeInfo:GetFetchLabelType,
+         fetchGetAmexInfo:GetAmexInfoDetails,
+         fetchCardTypeInfo:GetFetchCardType,
+         chSlice:ChSliceReducer,
+         fetchMailerInfoDetails:MailerReducer,
+         exisitingCaseDetails:FetchExisitingCardHolderInfo,
+         fetchControlInfodet:GetControlInfoDetails,
+         insertBulkCard:BulkCardReducer,
+         fetchAdressDetailsFromZip:GetAdressDetailsReducer,
+         addressDetails:addressDetailsReducer,
+         fetchSysPrin:sysPrinreducer,
+         saveAddressDetails:dispatchaddressDetailsReducer,
+         submitAddressDetailsData:submitAddressDetailsReducer,
+         fetchImbDetails:fetchImbDetailsReducer,
+         fetchAccountTransactionTypeDetails: AccountTransactionTypeReducer,
+         specialCaseMessages:fetchSpecialCaseMessagesReducer,
+         fetchAccountDetails:ImbAccountDetailsReducer,
+    fetchAuditLoginfo:AudtiLogDetailesReducer,
+    }
+})
+export type ReducerType = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch;
+
+
+
+
 
 
 
