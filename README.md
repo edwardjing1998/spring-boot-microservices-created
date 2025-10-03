@@ -296,5 +296,119 @@ const initialState: LoadChFromCaseState = {
 
 
 
+
+
+
+
+
+
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {ReducerType} from '../../store'
+import axios from "axios";
+import { CardHolderInfoType } from "../types/CardHolderTypes";
+
+export const GetChInfo:CardHolderInfoType={
+    details:{
+    caseNumber: "",
+    piId: "",
+    customerId: "",
+    primaryPiId: "",
+    account: "",
+   firstName:"",
+   lastName:"",
+    homePhone: "",
+    workPhone: "",
+    entityCode: "",
+    roleCode: "",
+    piStatus: "",
+    status: "",
+    active: 1073741824,
+    reason: "",
+    subReason: 1073741824,
+    disposition: "",
+    inHour: "",
+    inDate: "",
+    nextDate: "",
+    outDate: "",
+    autoDate: "",
+    numCards: 1073741824,
+    finalActionCardsNr: 1073741824,
+    deliveryId: 1073741824,
+    sysPrin: "",
+    cycle: "",
+    firstUpdateVendId: "",
+    contactCode: "",
+    contactPhoneNumber: "",
+    returnReasonCode: "",
+    issuanceCode: "",
+    issuanceDate: "",
+    operatorCode: "",
+    barcodeTypeCode: "",
+    fileSent: "",
+    postageBilled: "",
+    issuedByAmex: 1073741824,
+    recordTypeText: "",
+    serviceTypeText: "",
+    mailerId: "",
+    as400ClientId: "",
+    as400SystemId: "",
+    basicSupplementalId: "",
+    originalMailDate: "",
+    msgId: "",
+    mailMethod: "",
+    sourceFile: "",
+    custId: "",
+    msIssueDate: "",
+    custId2: "",
+    marketCode: "",
+    accountTokenId: "",
+    piIdTokenId: "",
+    primaryPiIdTokenId: "",
+    billing_sp: ""
+    }
+}
+export const fetchCHinfoDetails=createAsyncThunk('fetch/getCardholderInfo',async(acctNum:string)=>{
+   
+    const response= await axios.get(`http://localhost:8010/v1/Case/retrieveLatestCases?accNum=${acctNum}`)
+    return response?.data[0]
+})
+
+const FetchCardHolderInfo=createSlice({
+    name:'FetchCardHolderInfo',
+    initialState:GetChInfo,
+    reducers:{
+        fetchCHinfoDetailsinformation(state,action){
+            state=action?.payload
+        }
+    },
+    extraReducers(builder){
+        builder
+        .addCase(fetchCHinfoDetails.pending,(state,action)=>{
+            //state.status='loading'
+        })
+        .addCase(fetchCHinfoDetails.fulfilled,(state,action)=>{
+          state.details=action?.payload;
+        })
+        .addCase(fetchCHinfoDetails.rejected,(state,action)=>{
+            //state.error="Failed fetching account details"
+        })
+    }
+})
+
+export const fetchCHinfoDetailsInfo = (state: ReducerType) =>
+  state.FetchCardHolderInfo?.details ?? null;  // ⬅️ null-safe
+
+export const {fetchCHinfoDetailsinformation}= FetchCardHolderInfo.actions;
+export default FetchCardHolderInfo.reducer;
+
+
+
+
+
+
+
+
+
+
     
 
