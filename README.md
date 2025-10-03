@@ -26,6 +26,28 @@ u
     
 
 
+import { Route, BrowserRouter as Router, Routes } from "react-router";
+
+import RapidAdmin from "./RapidAdmin/Hello";
+
+import AccountNumberComponent from "./Rapid/Onload/Components/AccountNumberComponent";
+import ImbMainComponent from "./Rapid/RapidImb/Components/ImbMainComponent";
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<AccountNumberComponent />} />
+        <Route path="/admin" element={<RapidAdmin />} />
+       <Route path="/Imb" element={<ImbMainComponent />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+
+
 
 
 
