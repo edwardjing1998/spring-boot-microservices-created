@@ -257,6 +257,14 @@ export type AppDispatch = typeof store.dispatch;
 
 
 
+// Rapid/Redux/LoadChFromCase.ts  (or wherever your selector lives)
+import type { ReducerType } from '../../../store'; // or RootState
+
+export const fetchCHinfoDetailsInfo = (state: ReducerType) =>
+  state.FetchCardHolderInfo?.details ?? null;  // ⬅️ null-safe
+
+
+
 
 
 
