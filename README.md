@@ -23,6 +23,10 @@ u
 
 
 
+    
+
+
+
 
 
 
@@ -262,6 +266,28 @@ import type { ReducerType } from '../../../store'; // or RootState
 
 export const fetchCHinfoDetailsInfo = (state: ReducerType) =>
   state.FetchCardHolderInfo?.details ?? null;  // ⬅️ null-safe
+
+
+
+
+
+
+
+
+
+
+
+
+// inside LoadChFromCase slice file
+type Details = { caseNumber: string; /* ...other fields you read... */ };
+
+type LoadChFromCaseState = {
+  details: Details | null;
+};
+
+const initialState: LoadChFromCaseState = {
+  details: null,   // ⬅️ start as null instead of undefined
+};
 
 
 
