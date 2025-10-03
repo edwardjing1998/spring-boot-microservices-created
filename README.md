@@ -1,36 +1,26 @@
--- Standard SQL, should run on all major RDBMS with minimal/no changes
-SELECT c.client,
-       sp.sys_prin,
-       'invalid_deliv_areas' AS list_name,
-       i.area AS item
-FROM   clients c
-LEFT JOIN sys_prins sp
-       ON sp.client = c.client
-LEFT JOIN invalid_deliv_areas i
-       ON i.sys_prin = sp.sys_prin
-
-UNION ALL
-
-SELECT c.client,
-       sp.sys_prin,
-       'vendor_sent_to' AS list_name,
-       s.vend_id AS item
-FROM   clients c
-LEFT JOIN sys_prins sp
-       ON sp.client = c.client
-LEFT JOIN vendor_sent_to s
-       ON s.sys_prin = sp.sys_prin
-
-UNION ALL
-
-SELECT c.client,
-       sp.sys_prin,
-       'vendor_received_from' AS list_name,
-       r.vend_id AS item
-FROM   clients c
-LEFT JOIN sys_prins sp
-       ON sp.client = c.client
-LEFT JOIN vendor_received_from r
-       ON r.sys_prin = sp.sys_prin
-
-ORDER BY client, sys_prin, list_name, item;
+SELECT
+  c.client                                   AS client,
+  sp.sys_prin,
+  COALESCE(ida.areas_json, '[]')                  AS invalid_deliv_areas,
+  COALESCE(vst.vendors_json, '[]')                AS vendor_sent_to,
+  COALESCE(vrf.vendors_json, '[]')                AS vendor_sent_to
+FROM dbo.clients      AS c
+LEFT JOIN dbo.sys_prins AS sp
+  ON sp.client = c.client
+OUTER APPLY (
+  SELECT '[' + STRING_AGG(QUOTENAME(i.area, '"'), ',') + ']'
+  FROM dbo.invalid_deliv_areas AS i
+  WHERE i.sys_prin = sp.sys_prin
+) AS ida(areas_json)
+OUTER APPLY (
+  SELECT '[' + STRING_AGG(QUOTENAME(s.vend_id, '"'), ',') + ']'
+  FROM dbo.vendor_sent_to AS s
+  WHERE s.sys_prin = sp.sys_prin
+) AS vst(vendors_json)
+OUTER APPLY (
+  SELECT '[' + STRING_AGG(QUOTENAME(r.vend_id, '"'), ',') + ']'
+  FROM dbo.vendor_sent_to AS r
+  WHERE r.sys_prin = sp.sys_prin
+) AS vrf(vendors_json)
+WHERE c.client IS NOT NULL  -- optional guard
+ORDER BY c.client, sp.sys_prin;
