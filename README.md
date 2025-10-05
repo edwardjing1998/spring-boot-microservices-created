@@ -1,280 +1,348 @@
-SELECT (
-  SELECT
-      c.client        AS [client],
-      c.name          AS [name],
-      c.addr          AS [addr],
-      c.city          AS [city],
-      c.state         AS [state],
-      c.zip           AS [zip],
-      c.contact       AS [contact],
-      c.phone         AS [phone],
-      c.active        AS [active],
-      c.fax_number    AS [faxNumber],
-      c.billing_sp    AS [billingSp],
-      c.report_break_flag   AS [reportBreakFlag],
-      c.chlookup_type       AS [chLookUpType],
-      c.exclude_from_report AS [excludeFromReport],
-      c.positive_reports    AS [positiveReports],
-      c.sub_client_ind      AS [subClientInd],
-      c.sub_client_xref     AS [subClientXref],
-      c.amex_issued         AS [amexIssued],
-
-      /* ---- reportOptions (array) ---- */
-      COALESCE(JSON_QUERY((
-        SELECT
-          ro.client_id         AS [clientId],
-          ro.report_id         AS [reportId],
-          ro.receive_flag      AS [receiveFlag],
-          ro.output_type_cd    AS [outputTypeCd],
-          ro.file_type_cd      AS [fileTypeCd],
-          ro.email_flag        AS [emailFlag],
-          ro.email_body_tx     AS [emailBodyTx],
-          ro.report_password_tx AS [reportPasswordTx],
-
-          /* reportDetails (single object) */
-          JSON_QUERY((
-            SELECT
-              rd.report_id              AS [reportId],
-              rd.query_name             AS [queryName],
-              rd.query                  AS [query],
-              rd.input_data_fields      AS [inputDataFields],
-              rd.file_ext               AS [fileExt],
-              rd.db_driver_type         AS [dbDriverType],
-              rd.file_header_ind        AS [fileHeaderInd],
-              rd.default_file_nm        AS [defaultFileNm],
-              rd.report_db_server       AS [reportDbServer],
-              rd.report_db              AS [reportDb],
-              rd.report_db_userid       AS [reportDbUserid],
-              rd.report_db_passwrd      AS [reportDbPasswrd],
-              rd.file_transfer_type     AS [fileTransferType],
-              rd.report_db_ip_and_port  AS [reportDbIpAndPort],
-              rd.report_by_client_flag  AS [reportByClientFlag],
-              rd.rerun_date_range_start AS [rerunDateRangeStart],
-              rd.rerun_date_range_end   AS [rerunDateRangeEnd],
-              rd.rerun_client_id        AS [rerunClientId],
-              rd.email_from_address     AS [emailFromAddress],
-              rd.email_event_id         AS [emailEventId],
-              rd.tab_delimited_flag     AS [tabDelimitedFlag],
-              rd.input_file_tx          AS [inputFileTx],
-              rd.input_file_key_start_pos AS [inputFileKeyStartPos],
-              rd.input_file_key_length  AS [inputFileKeyLength],
-              rd.access_level           AS [accessLevel],
-              rd.is_active              AS [isActive],
-              rd.is_visible             AS [isVisible],
-              rd.num_sheets             AS [numSheets],
-
-              /* c3FileTransfer (single object) */
-              JSON_QUERY((
-                SELECT
-                  ft.file_trns_id     AS [fileTransId],
-                  ft.sequence_nr      AS [sequenceNr],
-                  ft.transfer_cd      AS [transferCd],
-                  ft.protocol_nm      AS [protocolNm],
-                  ft.trans_prg_nm     AS [transPrgNm],
-                  ft.ip_port_cd       AS [ipPortCd],
-                  ft.block_size_nr    AS [blockSizeNr],
-                  ft.convert_file_cd  AS [convertFileCd],
-                  ft.mode_nm          AS [modeNm],
-                  ft.security_nm      AS [securityNm],
-                  ft.xfer_file_nm     AS [xferFileNm],
-                  ft.dd_nm            AS [ddNm],
-                  ft.member_cd        AS [memberCd],
-                  ft.job_nm           AS [jobNm],
-                  ft.remote_file_nm   AS [remoteFileNm],
-                  ft.gateway_access_cd AS [gatewayAccessCd],
-                  ft.listener_srv_nm  AS [listenerSrvNm],
-                  ft.org_type_cd      AS [orgTypeCd],
-                  ft.program_nm       AS [programNm],
-                  ft.bin_file_CRLF_ind AS [binFileCRLFInf],
-                  ft.control_file_nm  AS [controlFileNm],
-                  ft.record_lgth_nr   AS [recordLengthNr],
-                  ft.local_file_nm    AS [localFileNm]
-                FROM c3_transfer_parameters ft
-                WHERE ft.file_trns_id = rd.report_id
-                FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-              ))
-            FROM ADMIN_QUERY_LIST rd
-            WHERE rd.report_id = ro.report_id
-            FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-          )) AS [reportDetails]
+2025-10-05T13:34:19.389-05:00 ERROR 31232 --- [client-sysprin-reader] [0.0-8083-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.jdbc.UncategorizedSQLException: PreparedStatementCallback; uncategorized SQLException for SQL [SELECT
+  JSON_ARRAYAGG(
+    JSON_OBJECT(
+      'client'              VALUE c.client,
+      'name'                VALUE c.name,
+      'addr'                VALUE c.addr,
+      'city'                VALUE c.city,
+      'state'               VALUE c.state,
+      'zip'                 VALUE c.zip,
+      'contact'             VALUE c.contact,
+      'phone'               VALUE c.phone,
+      'active'              VALUE c.active,
+      'faxNumber'           VALUE c.fax_number,
+      'billingSp'           VALUE c.billing_sp,
+      'reportBreakFlag'     VALUE c.report_break_flag,
+      'chLookUpType'        VALUE c.chlookup_type,
+      'excludeFromReport'   VALUE c.exclude_from_report,
+      'positiveReports'     VALUE c.positive_reports,
+      'subClientInd'        VALUE c.sub_client_ind,
+      'subClientXref'       VALUE c.sub_client_xref,
+      'amexIssued'          VALUE c.amex_issued,
+      'reportOptions' VALUE COALESCE((
+        SELECT JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'clientId'         VALUE ro.client_id,
+            'reportId'         VALUE ro.report_id,
+            'receiveFlag'      VALUE ro.receive_flag,
+            'outputTypeCd'     VALUE ro.output_type_cd,
+            'fileTypeCd'       VALUE ro.file_type_cd,
+            'emailFlag'        VALUE ro.email_flag,
+            'emailBodyTx'      VALUE ro.email_body_tx,
+            'reportPasswordTx' VALUE ro.report_password_tx,
+            'reportDetails' VALUE (
+              SELECT JSON_OBJECT(
+                'reportId'             VALUE rd.report_id,
+                'queryName'            VALUE rd.query_name,
+                'query'                VALUE rd.query,
+                'inputDataFields'      VALUE rd.input_data_fields,
+                'fileExt'              VALUE rd.file_ext,
+                'dbDriverType'         VALUE rd.db_driver_type,
+                'fileHeaderInd'        VALUE rd.file_header_ind,
+                'defaultFileNm'        VALUE rd.default_file_nm,
+                'reportDbServer'       VALUE rd.report_db_server,
+                'reportDb'             VALUE rd.report_db,
+                'reportDbUserid'       VALUE rd.report_db_userid,
+                'reportDbPasswrd'      VALUE rd.report_db_passwrd,
+                'fileTransferType'     VALUE rd.file_transfer_type,
+                'reportDbIpAndPort'    VALUE rd.report_db_ip_and_port,
+                'reportByClientFlag'   VALUE rd.report_by_client_flag,
+                'rerunDateRangeStart'  VALUE rd.rerun_date_range_start,
+                'rerunDateRangeEnd'    VALUE rd.rerun_date_range_end,
+                'rerunClientId'        VALUE rd.rerun_client_id,
+                'emailFromAddress'     VALUE rd.email_from_address,
+                'emailEventId'         VALUE rd.email_event_id,
+                'tabDelimitedFlag'     VALUE rd.tab_delimited_flag,
+                'inputFileTx'          VALUE rd.input_file_tx,
+                'inputFileKeyStartPos' VALUE rd.input_file_key_start_pos,
+                'inputFileKeyLength'   VALUE rd.input_file_key_length,
+                'accessLevel'          VALUE rd.access_level,
+                'isActive'             VALUE rd.is_active,
+                'isVisible'            VALUE rd.is_visible,
+                'numSheets'            VALUE rd.num_sheets,
+                'c3FileTransfer' VALUE (
+                  SELECT JSON_OBJECT(
+                    'fileTransId'     VALUE ft.file_trns_id,
+                    'sequenceNr'      VALUE ft.sequence_nr,
+                    'transferCd'      VALUE ft.transfer_cd,
+                    'protocolNm'      VALUE ft.protocol_nm,
+                    'transPrgNm'      VALUE ft.trans_prg_nm,
+                    'ipPortCd'        VALUE ft.ip_port_cd,
+                    'blockSizeNr'     VALUE ft.block_size_nr,
+                    'convertFileCd'   VALUE ft.convert_file_cd,
+                    'modeNm'          VALUE ft.mode_nm,
+                    'securityNm'      VALUE ft.security_nm,
+                    'xferFileNm'      VALUE ft.xfer_file_nm,
+                    'ddNm'            VALUE ft.dd_nm,
+                    'memberCd'        VALUE ft.member_cd,
+                    'jobNm'           VALUE ft.job_nm,
+                    'remoteFileNm'    VALUE ft.remote_file_nm,
+                    'gatewayAccessCd' VALUE ft.gateway_access_cd,
+                    'listenerSrvNm'   VALUE ft.listener_srv_nm,
+                    'orgTypeCd'       VALUE ft.org_type_cd,
+                    'programNm'       VALUE ft.program_nm,
+                    'binFileCRLFInf'  VALUE ft.bin_file_CRLF_ind,
+                    'controlFileNm'   VALUE ft.control_file_nm,
+                    'recordLengthNr'  VALUE ft.record_lgth_nr,
+                    'localFileNm'     VALUE ft.local_file_nm
+                  )
+                  FROM c3_transfer_parameters ft
+                  WHERE ft.file_trns_id = rd.report_id
+                )
+              )
+              FROM ADMIN_QUERY_LIST rd
+              WHERE rd.report_id = ro.report_id
+            )
+          )
+        )
         FROM CLIENT_REPORT_OPTIONS ro
         WHERE ro.client_id = c.client
-        FOR JSON PATH
-      )), '[]') AS [reportOptions],
-
-      /* ---- sysPrinsPrefixes (array) ---- */
-      COALESCE(JSON_QUERY((
-        SELECT
-          spp.billing_sp  AS [billingSp],
-          spp.prefix      AS [prefix],
-          spp.atm_cash_rule AS [atmCashRule]
-        FROM sys_prins_prefix AS spp
+      ), JSON '[]'),
+      'sysPrinsPrefixes' VALUE COALESCE((
+        SELECT JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'billingSp'   VALUE spp.billing_sp,
+            'prefix'      VALUE spp.prefix,
+            'atmCashRule' VALUE spp.atm_cash_rule
+          )
+          ORDER BY spp.prefix
+        )
+        FROM sys_prins_prefix spp
         WHERE spp.BILLING_SP = c.billing_sp
-        ORDER BY spp.prefix
-        FOR JSON PATH
-      )), '[]') AS [sysPrinsPrefixes],
-
-      /* ---- clientEmail (array) ---- */
-      COALESCE(JSON_QUERY((
-        SELECT
-          ce.client_id       AS [clientId],
-          ce.email_address_tx AS [emailAddressTx],
-          ce.report_id       AS [reportId],
-          ce.email_name_tx   AS [emailNameTx],
-          ce.carbon_copy_flag AS [carbonCopyFlag],
-          ce.active_flag     AS [activeFlag],
-          ce.mail_server_id  AS [mailServerId]
+      ), JSON '[]'),
+      'clientEmail' VALUE COALESCE((
+        SELECT JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'clientId'       VALUE ce.client_id,
+            'emailAddressTx' VALUE ce.email_address_tx,
+            'reportId'       VALUE ce.report_id,
+            'emailNameTx'    VALUE ce.email_name_tx,
+            'carbonCopyFlag' VALUE ce.carbon_copy_flag,
+            'activeFlag'     VALUE ce.active_flag,
+            'mailServerId'   VALUE ce.mail_server_id
+          )
+          ORDER BY ce.report_id, ce.email_address_tx
+        )
         FROM CLIENT_EMAIL ce
         WHERE ce.client_id = c.client
-        ORDER BY ce.report_id, ce.email_address_tx
-        FOR JSON PATH
-      )), '[]') AS [clientEmail],
-
-      /* ---- sysPrins (array) ---- */
-      COALESCE(JSON_QUERY((
-        SELECT
-          sp.client         AS [client],
-          sp.sys_prin       AS [sysPrin],
-          sp.cust_type      AS [custType],
-          sp.undeliverable  AS [undeliverable],
-          sp.stat_a         AS [statA],
-          sp.stat_b         AS [statB],
-          sp.stat_c         AS [statC],
-          sp.stat_d         AS [statD],
-          sp.stat_e         AS [statE],
-          sp.stat_f         AS [statF],
-          sp.stat_i         AS [statI],
-          sp.stat_l         AS [statL],
-          sp.stat_o         AS [statO],
-          sp.stat_u         AS [statU],
-          sp.stat_x         AS [statX],
-          sp.stat_z         AS [statZ],
-          sp.po_box         AS [poBox],
-          sp.addr_flag      AS [addrFlag],
-          sp.temp_away      AS [tempAway],
-          sp.rps            AS [rps],
-          sp.session        AS [session],
-          sp.bad_state      AS [badState],
-          sp.A_STAT_RCH     AS [astatRch],
-          sp.NM_13          AS [nm13],
-          sp.temp_away_atts AS [tempAwayAtts],
-          sp.report_method  AS [reportMethod],
-          sp.active         AS [active],
-          sp.notes          AS [notes],
-          sp.RET_STAT       AS [returnStatus],
-          sp.DES_STAT       AS [destroyStatus],
-          sp.non_us         AS [nonUS],
-          sp.special        AS [special],
-          sp.pin            AS [pinMailer],
-          sp.hold_days      AS [holdDays],
-          sp.FORWARDING_ADDR AS [forwardingAddress],
-          sp.contact        AS [contact],
-          sp.phone          AS [phone],
-          sp.ENTITY_CD      AS [entityCode],
-
-          /* invalidDelivAreas (array) */
-          COALESCE(JSON_QUERY((
-            SELECT ida.area AS [area], ida.sys_prin AS [sysPrin]
-            FROM invalid_deliv_areas ida
-            WHERE ida.sys_prin = sp.sys_prin
-            FOR JSON PATH
-          )), '[]') AS [invalidDelivAreas],
-
-          /* vendorSentTo (array, only where vendor IO='I') */
-          COALESCE(JSON_QUERY((
-            SELECT
-              vst.sys_prin   AS [sysPrin],
-              vst.vend_id    AS [vendorId],
-              vst.queformail_cd AS [queForMail],
-              /* vendor (single object) */
-              JSON_QUERY((
-                SELECT
-                  v.vend_id          AS [id],
-                  v.vend_nm          AS [name],
-                  v.vend_actv_cd     AS [active],
-                  v.vend_rcvr_cd     AS [receiver],
-                  v.vend_fsrv_nm     AS [fileServerName],
-                  v.vend_fsrv_ip     AS [fileServerIp],
-                  v.fsrvr_user_id    AS [fileServerUserId],
-                  v.fsrvr_usr_pwd_tx AS [fileServerPassword],
-                  v.fsrvr_file_name_tx AS [fileName],
-                  v.fsrvr_unc_share_tx AS [uncShare],
-                  v.fsrvr_path_tx    AS [path],
-                  v.fsrvr_file_archive_path_tx AS [archivePath],
-                  v.vendor_type_cd   AS [vendorTypeCode],
-                  v.vend_file_io     AS [fileIo],
-                  v.vend_client_specific AS [clientSpecific],
-                  v.vend_schedule    AS [schedule],
-                  v.vend_date_last_worked AS [dateLastWorked],
-                  v.vend_filesize    AS [fileSize],
-                  v.vend_filetrans_specs AS [fileTransferSpecs],
-                  v.vend_file_type   AS [fileType],
-                  v.ftp_passive      AS [ftpPassive],
-                  v.ftp_filetype     AS [ftpFileType]
-                FROM VENDOR v
-                WHERE v.vend_id = vst.vend_id
-                FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-              )) AS [vendor]
-            FROM vendor_sent_to vst
-            WHERE vst.sys_prin = sp.sys_prin
-              AND EXISTS (
-                SELECT 1 FROM VENDOR vv
-                WHERE vv.vend_id = vst.vend_id AND vv.vend_file_io = 'I'
+      ), JSON '[]'),
+      'sysPrins' VALUE COALESCE((
+        SELECT JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'client'            VALUE sp.client,
+            'sysPrin'           VALUE sp.sys_prin,
+            'custType'          VALUE sp.cust_type,
+            'undeliverable'     VALUE sp.undeliverable,
+            'statA'             VALUE sp.stat_a,
+            'statB'             VALUE sp.stat_b,
+            'statC'             VALUE sp.stat_c,
+            'statD'             VALUE sp.stat_d,
+            'statE'             VALUE sp.stat_e,
+            'statF'             VALUE sp.stat_f,
+            'statI'             VALUE sp.stat_i,
+            'statL'             VALUE sp.stat_l,
+            'statO'             VALUE sp.stat_o,
+            'statU'             VALUE sp.stat_u,
+            'statX'             VALUE sp.stat_x,
+            'statZ'             VALUE sp.stat_z,
+            'poBox'             VALUE sp.po_box,
+            'addrFlag'          VALUE sp.addr_flag,
+            'tempAway'          VALUE sp.temp_away,
+            'rps'               VALUE sp.rps,
+            'session'           VALUE sp.session,
+            'badState'          VALUE sp.bad_state,
+            'astatRch'          VALUE sp.A_STAT_RCH,
+            'nm13'              VALUE sp.NM_13,
+            'tempAwayAtts'      VALUE sp.temp_away_atts,
+            'reportMethod'      VALUE sp.report_method,
+            'active'            VALUE sp.active,
+            'notes'             VALUE sp.notes,
+            'returnStatus'      VALUE sp.RET_STAT,
+            'destroyStatus'     VALUE sp.DES_STAT,
+            'nonUS'             VALUE sp.non_us,
+            'special'           VALUE sp.special,
+            'pinMailer'         VALUE sp.pin,
+            'holdDays'          VALUE sp.hold_days,
+            'forwardingAddress' VALUE sp.FORWARDING_ADDR,
+            'contact'           VALUE sp.contact,
+            'phone'             VALUE sp.phone,
+            'entityCode'        VALUE sp.ENTITY_CD,
+            'invalidDelivAreas' VALUE COALESCE((
+              SELECT JSON_ARRAYAGG(
+                JSON_OBJECT('area' VALUE ida.area, 'sysPrin' VALUE ida.sys_prin)
               )
-            FOR JSON PATH
-          )), '[]') AS [vendorSentTo],
-
-          /* vendorReceivedFrom (array, vendor IO='O') */
-          COALESCE(JSON_QUERY((
-            SELECT
-              vrf.sys_prin   AS [sysPrin],
-              vrf.vend_id    AS [vendorId],
-              vrf.queformail_cd AS [queForMail],
-              JSON_QUERY((
-                SELECT
-                  v.vend_id    AS [id],
-                  v.vend_nm    AS [name],
-                  v.vend_actv_cd AS [active],
-                  v.vend_rcvr_cd AS [receiver],
-                  v.vend_fsrv_nm AS [fileServerName],
-                  v.vend_fsrv_ip AS [fileServerIp],
-                  v.fsrvr_user_id AS [fileServerUserId],
-                  v.fsrvr_usr_pwd_tx AS [fileServerPassword],
-                  v.fsrvr_file_name_tx AS [fileName],
-                  v.fsrvr_unc_share_tx AS [uncShare],
-                  v.fsrvr_path_tx AS [path],
-                  v.fsrvr_file_archive_path_tx AS [archivePath],
-                  v.vendor_type_cd AS [vendorTypeCode],
-                  v.vend_file_io   AS [fileIo],
-                  v.vend_client_specific AS [clientSpecific],
-                  v.vend_schedule  AS [schedule],
-                  v.vend_date_last_worked AS [dateLastWorked],
-                  v.vend_filesize  AS [fileSize],
-                  v.vend_filetrans_specs AS [fileTransferSpecs],
-                  v.vend_file_type AS [fileType],
-                  v.ftp_passive    AS [ftpPassive],
-                  v.ftp_filetype   AS [ftpFileType]
-                FROM VENDOR v
-                WHERE v.vend_id = vrf.vend_id AND v.vend_file_io = 'O'
-                FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-              )) AS [vendor]
-            FROM vendor_sent_to vrf
-            WHERE vrf.sys_prin = sp.sys_prin
-              AND EXISTS (
-                SELECT 1 FROM VENDOR vv
-                WHERE vv.vend_id = vrf.vend_id AND vv.vend_file_io = 'O'
+              FROM invalid_deliv_areas ida
+              WHERE ida.sys_prin = sp.sys_prin
+            ), JSON '[]'),
+            'vendorSentTo' VALUE COALESCE((
+              SELECT JSON_ARRAYAGG(
+                JSON_OBJECT(
+                  'sysPrin'    VALUE vst.sys_prin,
+                  'vendorId'   VALUE vst.vend_id,
+                  'queForMail' VALUE vst.queformail_cd,
+                  'vendor'     VALUE (
+                    SELECT JSON_OBJECT(
+                      'id'                 VALUE v.vend_id,
+                      'name'               VALUE v.vend_nm,
+                      'active'             VALUE v.vend_actv_cd,
+                      'receiver'           VALUE v.vend_rcvr_cd,
+                      'fileServerName'     VALUE v.vend_fsrv_nm,
+                      'fileServerIp'       VALUE v.vend_fsrv_ip,
+                      'fileServerUserId'   VALUE v.fsrvr_user_id,
+                      'fileServerPassword' VALUE v.fsrvr_usr_pwd_tx,
+                      'fileName'           VALUE v.fsrvr_file_name_tx,
+                      'uncShare'           VALUE v.fsrvr_unc_share_tx,
+                      'path'               VALUE v.fsrvr_path_tx,
+                      'archivePath'        VALUE v.fsrvr_file_archive_path_tx,
+                      'vendorTypeCode'     VALUE v.vendor_type_cd,
+                      'fileIo'             VALUE v.vend_file_io,
+                      'clientSpecific'     VALUE v.vend_client_specific,
+                      'schedule'           VALUE v.vend_schedule,
+                      'dateLastWorked'     VALUE v.vend_date_last_worked,
+                      'fileSize'           VALUE v.vend_filesize,
+                      'fileTransferSpecs'  VALUE v.vend_filetrans_specs,
+                      'fileType'           VALUE v.vend_file_type,
+                      'ftpPassive'         VALUE v.ftp_passive,
+                      'ftpFileType'        VALUE v.ftp_filetype
+                    )
+                    FROM VENDOR v
+                    WHERE v.vend_id = vst.vend_id
+                  )
+                )
               )
-            FOR JSON PATH
-          )), '[]') AS [vendorReceivedFrom]
-
+              FROM vendor_sent_to vst
+              WHERE vst.sys_prin = sp.sys_prin
+                AND EXISTS (
+                  SELECT 1 FROM VENDOR vv
+                  WHERE vv.vend_id = vst.vend_id AND vv.vend_file_io = 'I'
+                )
+            ), JSON '[]'),
+            'vendorReceivedFrom' VALUE COALESCE((
+              SELECT JSON_ARRAYAGG(
+                JSON_OBJECT(
+                  'sysPrin'    VALUE vrf.sys_prin,
+                  'vendorId'   VALUE vrf.vend_id,
+                  'queForMail' VALUE vrf.queformail_cd,
+                  'vendor'     VALUE (
+                    SELECT JSON_OBJECT(
+                      'id'               VALUE v.vend_id,
+                      'name'             VALUE v.vend_nm,
+                      'active'           VALUE v.vend_actv_cd,
+                      'receiver'         VALUE v.vend_rcvr_cd,
+                      'fileServerName'   VALUE v.vend_fsrv_nm,
+                      'fileServerIp'     VALUE v.vend_fsrv_ip,
+                      'fileServerUserId' VALUE v.fsrvr_user_id,
+                      'fileServerPassword' VALUE v.fsrvr_usr_pwd_tx,
+                      'fileName'         VALUE v.fsrvr_file_name_tx,
+                      'uncShare'         VALUE v.fsrvr_unc_share_tx,
+                      'path'             VALUE v.fsrvr_path_tx,
+                      'archivePath'      VALUE v.fsrvr_file_archive_path_tx,
+                      'vendorTypeCode'   VALUE v.vendor_type_cd,
+                      'fileIo'           VALUE v.vend_file_io,
+                      'clientSpecific'   VALUE v.vend_client_specific,
+                      'schedule'         VALUE v.vend_schedule,
+                      'dateLastWorked'   VALUE v.vend_date_last_worked,
+                      'fileSize'         VALUE v.vend_filesize,
+                      'fileTransferSpecs'VALUE v.vend_filetrans_specs,
+                      'fileType'         VALUE v.vend_file_type,
+                      'ftpPassive'       VALUE v.ftp_passive,
+                      'ftpFileType'      VALUE v.ftp_filetype
+                    )
+                    FROM VENDOR v
+                    WHERE v.vend_id = vrf.vend_id AND v.vend_file_io = 'O'
+                  )
+                )
+              )
+              FROM vendor_sent_to vrf
+              WHERE vrf.sys_prin = sp.sys_prin
+                AND EXISTS (
+                  SELECT 1 FROM VENDOR vv
+                  WHERE vv.vend_id = vrf.vend_id AND vv.vend_file_io = 'O'
+                )
+            ), JSON '[]')
+          )
+        )
         FROM sys_prins sp
         WHERE sp.client = c.client
-        FOR JSON PATH
-      )), '[]') AS [sysPrins]
+      ), JSON '[]')
+    )
+  ) AS full_json
+  FROM (
+    SELECT * FROM clients
+    WHERE client IS NOT NULL
+    ORDER BY client
+    LIMIT ? OFFSET ?
+  ) c]; SQL state [S0001]; error code [102]; Incorrect syntax near 'VALUE'.] with root cause
 
-  FROM clients c
-  WHERE c.client IS NOT NULL
-  ORDER BY c.client
-  OFFSET :offset ROWS FETCH NEXT :size ROWS ONLY
-  FOR JSON PATH
-) AS full_json;
+com.microsoft.sqlserver.jdbc.SQLServerException: Incorrect syntax near 'VALUE'.
+        at com.microsoft.sqlserver.jdbc.SQLServerException.makeFromDatabaseError(SQLServerException.java:276) ~[mssql-jdbc-12.10.0.jre11.jar:na]
+        at com.microsoft.sqlserver.jdbc.SQLServerStatement.getNextResult(SQLServerStatement.java:1787) ~[mssql-jdbc-12.10.0.jre11.jar:na]
+        at com.microsoft.sqlserver.jdbc.SQLServerPreparedStatement.doExecutePreparedStatement(SQLServerPreparedStatement.java:688) ~[mssql-jdbc-12.10.0.jre11.jar:na]
+        at com.microsoft.sqlserver.jdbc.SQLServerPreparedStatement$PrepStmtExecCmd.doExecute(SQLServerPreparedStatement.java:607) ~[mssql-jdbc-12.10.0.jre11.jar:na]
+        at com.microsoft.sqlserver.jdbc.TDSCommand.execute(IOBuffer.java:7745) ~[mssql-jdbc-12.10.0.jre11.jar:na]
+        at com.microsoft.sqlserver.jdbc.SQLServerConnection.executeCommand(SQLServerConnection.java:4700) ~[mssql-jdbc-12.10.0.jre11.jar:na]
+        at com.microsoft.sqlserver.jdbc.SQLServerStatement.executeCommand(SQLServerStatement.java:321) ~[mssql-jdbc-12.10.0.jre11.jar:na]
+        at com.microsoft.sqlserver.jdbc.SQLServerStatement.executeStatement(SQLServerStatement.java:253) ~[mssql-jdbc-12.10.0.jre11.jar:na]
+        at com.microsoft.sqlserver.jdbc.SQLServerPreparedStatement.executeQuery(SQLServerPreparedStatement.java:521) ~[mssql-jdbc-12.10.0.jre11.jar:na]
+        at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52) ~[HikariCP-6.3.0.jar:na]
+        at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java) ~[HikariCP-6.3.0.jar:na]
+        at org.springframework.jdbc.core.JdbcTemplate$1.doInPreparedStatement(JdbcTemplate.java:732) ~[spring-jdbc-6.2.7.jar:6.2.7]
+        at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:658) ~[spring-jdbc-6.2.7.jar:6.2.7]
+        at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:723) ~[spring-jdbc-6.2.7.jar:6.2.7]
+        at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:748) ~[spring-jdbc-6.2.7.jar:6.2.7]
+        at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:804) ~[spring-jdbc-6.2.7.jar:6.2.7]
+        at org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate.queryForObject(NamedParameterJdbcTemplate.java:252) ~[spring-jdbc-6.2.7.jar:6.2.7]
+        at org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate.queryForObject(NamedParameterJdbcTemplate.java:269) ~[spring-jdbc-6.2.7.jar:6.2.7]
+        at rapid.repository.client.ClientDetailDaoWithNativeSql.fetchClientDetailPageWithNativeSql(ClientDetailDaoWithNativeSql.java:24) ~[common-model-0.0.1-SNAPSHOT.jar:na]
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+        at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359) ~[spring-aop-6.2.7.jar:6.2.7]
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.2.7.jar:6.2.7]
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.2.7.jar:6.2.7]
+        at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ~[spring-tx-6.2.7.jar:6.2.7]
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.7.jar:6.2.7]
+        at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.7.jar:6.2.7]
+        at rapid.repository.client.ClientDetailDaoWithNativeSql$$SpringCGLIB$$0.fetchClientDetailPageWithNativeSql(<generated>) ~[common-model-0.0.1-SNAPSHOT.jar:na]
+        at rapid.service.client.ClientNativeSqlService.fetchClientDetailJsonPage(ClientNativeSqlService.java:35) ~[common-services-0.0.1-SNAPSHOT.jar:na]
+        at rapid.client.web.ClientController.getClientsJson(ClientController.java:63) ~[classes/:na]
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+        at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.7.jar:6.2.7]
+        at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.7.jar:6.2.7]
+        at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.7.jar:6.2.7]
+        at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.7.jar:6.2.7]
+        at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.7.jar:6.2.7]
+        at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.7.jar:6.2.7]
+        at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.7.jar:6.2.7]
+        at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.7.jar:6.2.7]
+        at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.7.jar:6.2.7]
+        at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.2.7.jar:6.2.7]
+        at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.41.jar:6.0]
+        at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.7.jar:6.2.7]
+        at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.41.jar:6.0]
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.41.jar:10.1.41]
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.7.jar:6.2.7]
+        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.7.jar:6.2.7]
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.7.jar:6.2.7]
+        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.7.jar:6.2.7]
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:114) ~[spring-web-6.2.7.jar:6.2.7]
+        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.7.jar:6.2.7]
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.7.jar:6.2.7]
+        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.7.jar:6.2.7]
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116) ~[tomcat-embed-core-10.1.41.jar:10.1.41]
+        at org.apache.catali
