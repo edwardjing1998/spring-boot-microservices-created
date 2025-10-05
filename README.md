@@ -22,3 +22,12 @@ public class ClientJsonDaoFromConfig {
     return jdbc.queryForObject(fetchFullJsonSql, params, String.class);
   }
 }
+
+
+
+
+
+    @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
+      rapid.repository.legacy.LegacyClientRepository.class,
+      rapid.repository.experimental.ExperimentalRepo.class
+    }),
