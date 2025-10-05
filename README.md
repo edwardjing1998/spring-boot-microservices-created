@@ -1,33 +1,11 @@
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-
-@Repository
-public class ClientJsonDaoFromConfig {
-
-  private final NamedParameterJdbcTemplate jdbc;
-
-  public ClientJsonDaoFromConfig(NamedParameterJdbcTemplate jdbc) {
-    this.jdbc = jdbc;
-  }
-
-  @Value("${rapid.sql.fetchFullJson}")
-  private String fetchFullJsonSql;
-
-  public String fetchFullJsonPage(int offset, int size) {
-    var params = new MapSqlParameterSource()
-        .addValue("size", size)
-        .addValue("offset", offset);
-    return jdbc.queryForObject(fetchFullJsonSql, params, String.class);
-  }
-}
-
-
-
-
-
+  excludeFilters = {
+    // Exclude by concrete type(s)
     @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
       rapid.repository.legacy.LegacyClientRepository.class,
       rapid.repository.experimental.ExperimentalRepo.class
     }),
+    // Or exclude whole package(s) by regex
+    @Filter(type = FilterType.REGEX, pattern = "rapid\\.repository\\.temp\\..*"),
+    // Or exclude everything marked with a custom annotation
+    @Filter(type = FilterType.ANNOTATION, classes = ExcludeFromRepositoryScan.class)
+  }
