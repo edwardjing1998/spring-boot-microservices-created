@@ -1,236 +1,298 @@
-import React from 'react'
-import DeleteCase from './views/rapid-admin-edit/delete-case/DeleteCase'
+-- Returns a single row with one column: full_json (NVARCHAR(MAX))
+-- containing the JSON array of clients with all nested arrays/objects.
 
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
-const ArchiveDashboard = React.lazy(() => import('./views/dashboard/ArchiveDashboard'))
+SELECT (
+  SELECT
+    c.client                           AS [client],
+    c.name                             AS [name],
+    c.addr                             AS [addr],
+    c.city                             AS [city],
+    c.state                            AS [state],
+    c.zip                              AS [zip],
+    c.contact                          AS [contact],
+    c.phone                            AS [phone],
+    c.active                           AS [active],
+    c.fax_number                       AS [faxNumber],
+    c.billing_sp                       AS [billingSp],
+    c.report_break_flag                AS [reportBreakFlag],
+    c.chlookup_type                    AS [chLookUpType],
+    c.exclude_from_report              AS [excludeFromReport],
+    c.positive_reports                 AS [positiveReports],
+    c.sub_client_ind                   AS [subClientInd],
+    c.sub_client_xref                  AS [subClientXref],
+    c.amex_issued                      AS [amexIssued],
 
-const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
-const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
+    -- reportOptions: array
+    JSON_QUERY(ISNULL((
+      SELECT
+        ro.client_id         AS [clientId],
+        ro.report_id         AS [reportId],
+        ro.receive_flag      AS [receiveFlag],
+        ro.output_type_cd    AS [outputTypeCd],
+        ro.file_type_cd      AS [fileTypeCd],
+        ro.email_flag        AS [emailFlag],
+        ro.email_body_tx     AS [emailBodyTx],
+        ro.report_password_tx AS [reportPasswordTx],
 
-// Base
-const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
-const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
-const Cards = React.lazy(() => import('./views/base/cards/Cards'))
-const Carousels = React.lazy(() => import('./views/base/carousels/Carousels'))
-const Collapses = React.lazy(() => import('./views/base/collapses/Collapses'))
-const ListGroups = React.lazy(() => import('./views/base/list-groups/ListGroups'))
-const Navs = React.lazy(() => import('./views/base/navs/Navs'))
-const Paginations = React.lazy(() => import('./views/base/paginations/Paginations'))
-const Placeholders = React.lazy(() => import('./views/base/placeholders/Placeholders'))
-const Popovers = React.lazy(() => import('./views/base/popovers/Popovers'))
-const Progress = React.lazy(() => import('./views/base/progress/Progress'))
-const Spinners = React.lazy(() => import('./views/base/spinners/Spinners'))
-const Tabs = React.lazy(() => import('./views/base/tabs/Tabs'))
-const Tables = React.lazy(() => import('./views/base/tables/Tables'))
-const Tooltips = React.lazy(() => import('./views/base/tooltips/Tooltips'))
+        -- reportDetails: object
+        JSON_QUERY(ISNULL((
+          SELECT
+            rd.report_id              AS [reportId],
+            rd.query_name             AS [queryName],
+            rd.[query]                AS [query],
+            rd.input_data_fields      AS [inputDataFields],
+            rd.file_ext               AS [fileExt],
+            rd.db_driver_type         AS [dbDriverType],
+            rd.file_header_ind        AS [fileHeaderInd],
+            rd.default_file_nm        AS [defaultFileNm],
+            rd.report_db_server       AS [reportDbServer],
+            rd.report_db              AS [reportDb],
+            rd.report_db_userid       AS [reportDbUserid],
+            rd.report_db_passwrd      AS [reportDbPasswrd],
+            rd.file_transfer_type     AS [fileTransferType],
+            rd.report_db_ip_and_port  AS [reportDbIpAndPort],
+            rd.report_by_client_flag  AS [reportByClientFlag],
+            rd.rerun_date_range_start AS [rerunDateRangeStart],
+            rd.rerun_date_range_end   AS [rerunDateRangeEnd],
+            rd.rerun_client_id        AS [rerunClientId],
+            rd.email_from_address     AS [emailFromAddress],
+            rd.email_event_id         AS [emailEventId],
+            rd.tab_delimited_flag     AS [tabDelimitedFlag],
+            rd.input_file_tx          AS [inputFileTx],
+            rd.input_file_key_start_pos AS [inputFileKeyStartPos],
+            rd.input_file_key_length  AS [inputFileKeyLength],
+            rd.access_level           AS [accessLevel],
+            rd.is_active              AS [isActive],
+            rd.is_visible             AS [isVisible],
+            rd.num_sheets             AS [numSheets],
 
-// Buttons
-const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'))
-const ButtonGroups = React.lazy(() => import('./views/buttons/button-groups/ButtonGroups'))
-const Dropdowns = React.lazy(() => import('./views/buttons/dropdowns/Dropdowns'))
+            -- c3FileTransfer: object
+            JSON_QUERY(ISNULL((
+              SELECT
+                ft.file_trns_id     AS [fileTransId],
+                ft.sequence_nr      AS [sequenceNr],
+                ft.transfer_cd      AS [transferCd],
+                ft.protocol_nm      AS [protocolNm],
+                ft.trans_prg_nm     AS [transPrgNm],
+                ft.ip_port_cd       AS [ipPortCd],
+                ft.block_size_nr    AS [blockSizeNr],
+                ft.convert_file_cd  AS [convertFileCd],
+                ft.mode_nm          AS [modeNm],
+                ft.security_nm      AS [securityNm],
+                ft.xfer_file_nm     AS [xferFileNm],
+                ft.dd_nm            AS [ddNm],
+                ft.member_cd        AS [memberCd],
+                ft.job_nm           AS [jobNm],
+                ft.remote_file_nm   AS [remoteFileNm],
+                ft.gateway_access_cd AS [gatewayAccessCd],
+                ft.listener_srv_nm  AS [listenerSrvNm],
+                ft.org_type_cd      AS [orgTypeCd],
+                ft.program_nm       AS [programNm],
+                ft.bin_file_CRLF_ind AS [binFileCRLFInf],
+                ft.control_file_nm  AS [controlFileNm],
+                ft.record_lgth_nr   AS [recordLengthNr],
+                ft.local_file_nm    AS [localFileNm]
+              FROM c3_transfer_parameters ft
+              WHERE ft.file_trns_id = rd.report_id
+              FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+            ), '{}')) AS [c3FileTransfer]
+          FROM ADMIN_QUERY_LIST rd
+          WHERE rd.report_id = ro.report_id
+          FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+        ), '{}')) AS [reportDetails]
 
-//Forms
-const ChecksRadios = React.lazy(() => import('./views/forms/checks-radios/ChecksRadios'))
-const FloatingLabels = React.lazy(() => import('./views/forms/floating-labels/FloatingLabels'))
-const FormControl = React.lazy(() => import('./views/forms/form-control/FormControl'))
-const InputGroup = React.lazy(() => import('./views/forms/input-group/InputGroup'))
-const Layout = React.lazy(() => import('./views/forms/layout/Layout'))
-const Range = React.lazy(() => import('./views/forms/range/Range'))
-const Select = React.lazy(() => import('./views/forms/select/Select'))
-const Validation = React.lazy(() => import('./views/forms/validation/Validation'))
+      FROM CLIENT_REPORT_OPTIONS ro
+      WHERE ro.client_id = c.client
+      FOR JSON PATH
+    ), '[]')) AS [reportOptions],
 
-const Charts = React.lazy(() => import('./views/charts/Charts'))
+    -- sysPrinsPrefixes: array
+    JSON_QUERY(ISNULL((
+      SELECT
+        spp.billing_sp   AS [billingSp],
+        spp.prefix       AS [prefix],
+        spp.atm_cash_rule AS [atmCashRule]
+      FROM sys_prins_prefix spp
+      WHERE spp.billing_sp = c.billing_sp
+      ORDER BY spp.prefix
+      FOR JSON PATH
+    ), '[]')) AS [sysPrinsPrefixes],
 
-// Icons
-const CoreUIIcons = React.lazy(() => import('./views/icons/coreui-icons/CoreUIIcons'))
-const Flags = React.lazy(() => import('./views/icons/flags/Flags'))
-const Brands = React.lazy(() => import('./views/icons/brands/Brands'))
+    -- clientEmail: array
+    JSON_QUERY(ISNULL((
+      SELECT
+        ce.client_id       AS [clientId],
+        ce.email_address_tx AS [emailAddressTx],
+        ce.report_id       AS [reportId],
+        ce.email_name_tx   AS [emailNameTx],
+        ce.carbon_copy_flag AS [carbonCopyFlag],
+        ce.active_flag     AS [activeFlag],
+        ce.mail_server_id  AS [mailServerId]
+      FROM CLIENT_EMAIL ce
+      WHERE ce.client_id = c.client
+      ORDER BY ce.report_id, ce.email_address_tx
+      FOR JSON PATH
+    ), '[]')) AS [clientEmail],
 
-// Notifications
-const Alerts = React.lazy(() => import('./views/notifications/alerts/Alerts'))
-const Badges = React.lazy(() => import('./views/notifications/badges/Badges'))
-const Modals = React.lazy(() => import('./views/notifications/modals/Modals'))
-const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
+    -- sysPrins: array
+    JSON_QUERY(ISNULL((
+      SELECT
+        sp.client            AS [client],
+        sp.sys_prin          AS [sysPrin],
+        sp.cust_type         AS [custType],
+        sp.undeliverable     AS [undeliverable],
+        sp.stat_a            AS [statA],
+        sp.stat_b            AS [statB],
+        sp.stat_c            AS [statC],
+        sp.stat_d            AS [statD],
+        sp.stat_e            AS [statE],
+        sp.stat_f            AS [statF],
+        sp.stat_i            AS [statI],
+        sp.stat_l            AS [statL],
+        sp.stat_o            AS [statO],
+        sp.stat_u            AS [statU],
+        sp.stat_x            AS [statX],
+        sp.stat_z            AS [statZ],
+        sp.po_box            AS [poBox],
+        sp.addr_flag         AS [addrFlag],
+        sp.temp_away         AS [tempAway],
+        sp.rps               AS [rps],
+        sp.[session]         AS [session],
+        sp.bad_state         AS [badState],
+        sp.A_STAT_RCH        AS [astatRch],
+        sp.NM_13             AS [nm13],
+        sp.temp_away_atts    AS [tempAwayAtts],
+        sp.report_method     AS [reportMethod],
+        sp.active            AS [active],
+        sp.notes             AS [notes],
+        sp.RET_STAT          AS [returnStatus],
+        sp.DES_STAT          AS [destroyStatus],
+        sp.non_us            AS [nonUS],
+        sp.special           AS [special],
+        sp.pin               AS [pinMailer],
+        sp.hold_days         AS [holdDays],
+        sp.FORWARDING_ADDR   AS [forwardingAddress],
+        sp.contact           AS [contact],
+        sp.phone             AS [phone],
+        sp.ENTITY_CD         AS [entityCode],
 
-const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
+        -- invalidDelivAreas: array
+        JSON_QUERY(ISNULL((
+          SELECT
+            ida.area    AS [area],
+            ida.sys_prin AS [sysPrin]
+          FROM invalid_deliv_areas ida
+          WHERE ida.sys_prin = sp.sys_prin
+          FOR JSON PATH
+        ), '[]')) AS [invalidDelivAreas],
 
-// Rapid Admin -> Edit
-const SysPrinConfig = React.lazy(() => import('./views/rapid-admin-edit/sys-pin-config/SysPrinConfig'))
-const ClientInformationPanel = React.lazy(() => import('./views/rapid-admin-edit/client-information/ClientInformationPanel'))
-const ClientInformationPage = React.lazy(() => import('./modules/edit/client-information/ClientInformationPage'))
+        -- vendorSentTo (only vendors with vend_file_io = 'I'): array
+        JSON_QUERY(ISNULL((
+          SELECT
+            vst.sys_prin    AS [sysPrin],
+            vst.vend_id     AS [vendorId],
+            vst.queformail_cd AS [queForMail],
 
+            -- nested vendor: object
+            JSON_QUERY(ISNULL((
+              SELECT
+                v.vend_id               AS [id],
+                v.vend_nm               AS [name],
+                v.vend_actv_cd          AS [active],
+                v.vend_rcvr_cd          AS [receiver],
+                v.vend_fsrv_nm          AS [fileServerName],
+                v.vend_fsrv_ip          AS [fileServerIp],
+                v.fsrvr_user_id         AS [fileServerUserId],
+                v.fsrvr_usr_pwd_tx      AS [fileServerPassword],
+                v.fsrvr_file_name_tx    AS [fileName],
+                v.fsrvr_unc_share_tx    AS [uncShare],
+                v.fsrvr_path_tx         AS [path],
+                v.fsrvr_file_archive_path_tx AS [archivePath],
+                v.vendor_type_cd        AS [vendorTypeCode],
+                v.vend_file_io          AS [fileIo],
+                v.vend_client_specific  AS [clientSpecific],
+                v.vend_schedule         AS [schedule],
+                v.vend_date_last_worked AS [dateLastWorked],
+                v.vend_filesize         AS [fileSize],
+                v.vend_filetrans_specs  AS [fileTransferSpecs],
+                v.vend_file_type        AS [fileType],
+                v.ftp_passive           AS [ftpPassive],
+                v.ftp_filetype          AS [ftpFileType]
+              FROM VENDOR v
+              WHERE v.vend_id = vst.vend_id
+              FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+            ), '{}')) AS [vendor]
 
-const GlobalSettingForm = React.lazy(() => import('./views/rapid-admin-edit/global-setting/GlobalSettingForm'))
-const DailyMessage = React.lazy(() => import('./views/rapid-admin-edit/daily-message/DailyMessage'))
-const ClientAutoCompleteInput = React.lazy(() => import('./views/rapid-admin-edit/client-search-input/ClientAutoCompleteInput'))
-const ReceivingFiles = React.lazy(() => import('./views/rapid-admin-edit/receiving-files/ReceivingFiles'))
-const EmailSetup = React.lazy(() => import('./views/rapid-admin-edit/email-setup/EmailSetup'))
+          FROM vendor_sent_to vst
+          WHERE vst.sys_prin = sp.sys_prin
+            AND EXISTS (
+              SELECT 1
+              FROM VENDOR vv
+              WHERE vv.vend_id = vst.vend_id
+                AND vv.vend_file_io = 'I'
+            )
+          FOR JSON PATH
+        ), '[]')) AS [vendorSentTo],
 
-const MailType = React.lazy(() => import('./views/rapid-admin-edit/mail-type/MailType'))
+        -- vendorReceivedFrom (only vendors with vend_file_io = 'O'): array
+        JSON_QUERY(ISNULL((
+          SELECT
+            vrf.sys_prin     AS [sysPrin],
+            vrf.vend_id      AS [vendorId],
+            vrf.queformail_cd AS [queForMail],
 
+            JSON_QUERY(ISNULL((
+              SELECT
+                v.vend_id               AS [id],
+                v.vend_nm               AS [name],
+                v.vend_actv_cd          AS [active],
+                v.vend_rcvr_cd          AS [receiver],
+                v.vend_fsrv_nm          AS [fileServerName],
+                v.vend_fsrv_ip          AS [fileServerIp],
+                v.fsrvr_user_id         AS [fileServerUserId],
+                v.fsrvr_usr_pwd_tx      AS [fileServerPassword],
+                v.fsrvr_file_name_tx    AS [fileName],
+                v.fsrvr_unc_share_tx    AS [uncShare],
+                v.fsrvr_path_tx         AS [path],
+                v.fsrvr_file_archive_path_tx AS [archivePath],
+                v.vendor_type_cd        AS [vendorTypeCode],
+                v.vend_file_io          AS [fileIo],
+                v.vend_client_specific  AS [clientSpecific],
+                v.vend_schedule         AS [schedule],
+                v.vend_date_last_worked AS [dateLastWorked],
+                v.vend_filesize         AS [fileSize],
+                v.vend_filetrans_specs  AS [fileTransferSpecs],
+                v.vend_file_type        AS [fileType],
+                v.ftp_passive           AS [ftpPassive],
+                v.ftp_filetype          AS [ftpFileType]
+              FROM VENDOR v
+              WHERE v.vend_id = vrf.vend_id
+                AND v.vend_file_io = 'O'
+              FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+            ), '{}')) AS [vendor]
 
-const ReviewDeletedCase = React.lazy(() => import('./views/rapid-admin-edit/review-deleted-case/ReviewDeletedCase'))
-const DeletedCase = React.lazy(() => import('./views/rapid-admin-edit/delete-case/DeleteCase'))
+          FROM vendor_sent_to vrf
+          WHERE vrf.sys_prin = sp.sys_prin
+            AND EXISTS (
+              SELECT 1
+              FROM VENDOR vv
+              WHERE vv.vend_id = vrf.vend_id
+                AND vv.vend_file_io = 'O'
+            )
+          FOR JSON PATH
+        ), '[]')) AS [vendorReceivedFrom]
 
-const DailyActivity = React.lazy(() => import('./views/rapid-admin-report/daily-activity/DailyActivity'))
-const DailyReturnDestroy = React.lazy(() => import('./views/rapid-admin-report/daily-return-destroy/DailyReturnDestroy'))
-const Inventory = React.lazy(() => import('./views/rapid-admin-report/inventory/Inventory'))
-const InventoryListing = React.lazy(() => import('./views/rapid-admin-report/inventory-listing/InventoryListing'))
-const InventoryReceived = React.lazy(() => import('./views/rapid-admin-report/inventory-received/InventoryReceived'))
+      FROM sys_prins sp
+      WHERE sp.client = c.client
+      FOR JSON PATH
+    ), '[]')) AS [sysPrins]
 
-const ProductivityReport = React.lazy(() => import('./views/rapid-admin-report/productivity/ProductivityReport'))
-
-const SysPrinConfigs = React.lazy(() => import('./views/rapid-admin-edit/sys-pin-config/SysPrinConfigs'))
-const ZipCodeConfig = React.lazy(() => import('./views/rapid-admin-edit/zip-code-config/ZipcodeConfig'))
-
-const AddressChange = React.lazy(() => import('./views/rapid-admin-report/address-change/AddressChange'))
-
-const ClientReportMapping = React.lazy(() => import('./views/rapid-admin-maintenance/client-report-mapping/ClientReportMapping'))
-const WebClientDirectory = React.lazy(() => import('./views/rapid-admin-maintenance/web-client-directory/WebClientDirectory'))
-
-const InputRobotTotals = React.lazy(() => import('./views/rapid-admin-report/productivity/InputRobotTotals/InputRobotTotals'))
-
-const EmailEventId = React.lazy(() => import('./views/rapid-admin-report/EmailEventId/EmailEventId'))
-
-
-const routes = [
-  { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/archive-dashboard', name: 'ArchiveDashboard', element: ArchiveDashboard },
-
-  { path: '/theme', name: 'Theme', element: Colors, exact: true },
-
-  { path: '/theme/colors', name: 'Colors', element: Carousels },
-  { path: '/maintenance/client-report-mapping', name: 'ClientReportMapping', element: ClientReportMapping },
-  { path: '/maintenance/resend-web-reports', name: 'Colors', element: Spinners },
-  { path: '/maintenance/web-client-directory', name: 'WebClientDirectory', element: WebClientDirectory },
-
-  { path: '/report/unmatch-sys-prins', name: 'Colors', element: ChecksRadios },
-  { path: '/report/billing', name: 'Colors', element: Alerts },
-  { path: '/report/report-queries', name: 'Colors', element: Badges },
-  { path: '/report/email-event-id', name: 'EmailEventId', element: EmailEventId },
-  { path: '/report/input-rebot-totals', name: 'InputRobotTotals', element: InputRobotTotals },
-
-  { path: '/report/billing', name: 'Colors', element: Toasts },
-  { path: '/report/resend-email-reports', name: 'Colors', element: Toasts },
-  { path: '/report/report-queries', name: 'Colors', element: Toasts },
-  { path: '/report/email-event-id', name: 'Colors', element: Toasts },
-
-  { path: '/query-maintenance/define-query', name: 'Colors', element: ChecksRadios },
-
-  { path: '/archive-query-maintenance/c3-file-transfer', name: 'Colors', element: ChecksRadios },
-  { path: '/query-maintenance/define-query', name: 'Colors', element: ChecksRadios },
-  { path: '/query-maintenance/define-query', name: 'Colors', element: ChecksRadios },
-  { path: '/archive-query-maintenance/table-load', name: 'Colors', element: ChecksRadios },
-  { path: '/query-maintenance/define-query', name: 'Colors', element: ChecksRadios },
-  { path: '/query-maintenance/define-query', name: 'Colors', element: ChecksRadios },
-
-
-  { path: '/query-maintenance/c3-file-transfer', name: 'Colors', element: ChecksRadios },
-  { path: '/query-maintenance/data-definitions', name: 'Colors', element: ChecksRadios },
-  { path: '/query-maintenance/define-query', name: 'Colors', element: ChecksRadios },
-  { path: '/query-maintenance/table-load', name: 'Colors', element: ChecksRadios },
-  { path: '/query-maintenance/table-load-column-mapping', name: 'Colors', element: ChecksRadios },
-  { path: '/query-maintenance/tool-tips', name: 'Colors', element: ChecksRadios },
-
-  { path: '/report/address-change', name: 'AddressChange', element: AddressChange },
-
-  { path: '/report/mails-with-a-stat', name: 'Colors', element: ChecksRadios },
-  { path: '/report/status', name: 'Colors', element: ChecksRadios },
-  { path: '/report/pending-cis', name: 'Colors', element: ChecksRadios },
-  { path: '/report/failed-non-mons', name: 'Colors', element: ChecksRadios },
-  { path: '/report/robot-labels', name: 'Colors', element: ChecksRadios },
-
-
-  { path: '/query-maintenance/define-query', name: 'Colors', element: ChecksRadios },
-  { path: '/query-maintenance/c3-file-transfer', name: 'Colors', element: Alerts },
-  { path: '/query-maintenance/data-definitions', name: 'Colors', element: Badges },
-  { path: '/query-maintenance/schedule-batch-report', name: 'Colors', element: Range },
-  { path: '/query-maintenance/table-load', name: 'Colors', element: Toasts },
-  { path: '/query-maintenance/table-load-column-mapping', name: 'Colors', element: Range },
-  { path: '/query-maintenance/tool-tips', name: 'Colors', element: Toasts },
-
-
-  { path: '/archive-maintenance/client-report-mapping', name: 'Colors', element: Toasts },
-  { path: '/archive-maintenance/resend-web-reports', name: 'Colors', element: Spinners },
-  { path: '/archive-maintenance/web-client-directory', name: 'Colors', element: Tooltips },
-  { path: '/archive-report/billing', name: 'Colors', element: Alerts },
-  { path: '/archive-maintenance/input-robot-totals', name: 'Colors', element: Alerts },
-  { path: '/archive-report/unmatch-sys-prins', name: 'Colors', element: Alerts },
-  { path: '/archive-report/report-queries', name: 'Colors', element: Alerts },
-  { path: '/archive-report/email-event-id', name: 'Colors', element: Range },
-  { path: '/archive-query-maintenance/tool-tips', name: 'Colors', element: Range },
-  { path: '/archive-query-maintenance/schedule-batch-report', name: 'Colors', element: Range },
-  { path: '/archive-query-maintenance/data-definitions', name: 'Spinners', element: Spinners },
-  { path: '/archive-query-maintenance/define-query', name: 'Spinners', element: Spinners },
-  { path: 'archive-query-maintenance/table-load-column-mapping', name: 'Spinners', element: Spinners },
-
-  { path: '/theme/typography', name: 'Typography', element: Typography },
-  { path: '/base', name: 'Base', element: Cards, exact: true },
-  { path: '/base/accordion', name: 'Accordion', element: Accordion },
-  { path: '/base/breadcrumbs', name: 'Breadcrumbs', element: Breadcrumbs },
-  { path: '/base/cards', name: 'Cards', element: Cards },
-  { path: '/base/carousels', name: 'Carousel', element: Carousels },
-  { path: '/base/collapses', name: 'Collapse', element: Collapses },
-  { path: '/base/list-groups', name: 'List Groups', element: ListGroups },
-  { path: '/base/navs', name: 'Navs', element: Navs },
-  { path: '/base/paginations', name: 'Paginations', element: Paginations },
-  { path: '/base/placeholders', name: 'Placeholders', element: Placeholders },
-  { path: '/base/popovers', name: 'Popovers', element: Popovers },
-  { path: '/base/progress', name: 'Progress', element: Progress },
-  { path: '/base/spinners', name: 'Spinners', element: Spinners },
-  { path: '/base/tabs', name: 'Tabs', element: Tabs },
-  { path: '/base/tables', name: 'Tables', element: Tables },
-  { path: '/base/tooltips', name: 'Tooltips', element: Tooltips },
-  { path: '/buttons', name: 'Buttons', element: Buttons, exact: true },
-  { path: '/buttons/buttons', name: 'Buttons', element: Buttons },
-  { path: '/buttons/dropdowns', name: 'Dropdowns', element: Dropdowns },
-  { path: '/buttons/button-groups', name: 'Button Groups', element: ButtonGroups },
-  { path: '/charts', name: 'Charts', element: Charts },
-  { path: '/forms', name: 'Forms', element: FormControl, exact: true },
-  { path: '/forms/form-control', name: 'Form Control', element: FormControl },
-  { path: '/forms/select', name: 'Select', element: Select },
-  { path: '/forms/checks-radios', name: 'Checks & Radios', element: ChecksRadios },
-  { path: '/forms/range', name: 'Range', element: Range },
-  { path: '/forms/input-group', name: 'Input Group', element: InputGroup },
-  { path: '/forms/floating-labels', name: 'Floating Labels', element: FloatingLabels },
-  { path: '/forms/layout', name: 'Layout', element: Layout },
-  { path: '/forms/validation', name: 'Validation', element: Validation },
-  { path: '/icons', exact: true, name: 'Icons', element: CoreUIIcons },
-  { path: '/icons/coreui-icons', name: 'CoreUI Icons', element: CoreUIIcons },
-  { path: '/icons/flags', name: 'Flags', element: Flags },
-  { path: '/icons/brands', name: 'Brands', element: Brands },
-  { path: '/notifications', name: 'Notifications', element: Alerts, exact: true },
-  { path: '/notifications/alerts', name: 'Alerts', element: Alerts },
-  { path: '/notifications/badges', name: 'Badges', element: Badges },
-  { path: '/notifications/modals', name: 'Modals', element: Modals },
-  { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
-  { path: '/widgets', name: 'Widgets', element: Widgets },
-
-  // Edit
-  { path: '/edit/global-settings', name: 'GlobalSettingForm', element: GlobalSettingForm },
-  { path: '/edit/daily-message', name: 'DailyMessage', element: DailyMessage },
-  { path: '/edit/client-search-input', name: 'ClientAutoCompleteInput', element: ClientAutoCompleteInput },
-  { path: '/edit/sys-prin-config', name: 'SysPrinConfig', element: SysPrinConfig },
-  { path: '/edit/sys-prin-config-new', name: 'SysPrinConfigs', element: SysPrinConfigs },
-  { path: '/edit/client-information', name: 'ClientInformationPanel', element: ClientInformationPanel },
-  { path: '/edit/client-information-new', name: 'Edit / Client Information', element: ClientInformationPage },
-  { path: '/eidt/receive-files', name: 'ReceivingFiles', element: ReceivingFiles },
-  { path: '/edit/email-setup', name: 'EmailSetup', element: EmailSetup },
-  { path: '/edit/message-table', name: 'SysPrinConfig', element: SysPrinConfig },
-  { path: '/edit/zip-code-config', name: 'ZipCodeConfig', element: ZipCodeConfig },
-  { path: '/edit/mail-type', name: 'MailType', element: MailType },
-  { path: '/edit/delete-case', name: 'DeleteCase', element: DeleteCase },
-  { path: '/edit/review-deleted-case', name: 'ReviewDeletedCase', element: ReviewDeletedCase },
-  { path: '/eidt/account-number', name: 'SysPrinConfig', element: SysPrinConfig },
-
-  { path: '/report/daily-return-destroy', name: 'DailyReturnDestroy', element: DailyReturnDestroy },
-  { path: '/report/inventory', name: 'Inventory', element: Inventory },
-  { path: '/report/inventory-listing', name: 'InventoryListing', element: InventoryListing },
-  { path: '/report/inventory-received', name: 'InventoryReceived', element: InventoryReceived },
-  { path: '/report/daily-activity', name: 'DailyActivity', element: DailyActivity },
-  { path: '/report/productivity-report', name: 'ProductivityReport', element: ProductivityReport },
-  { path: '/report/input-robot-totals', name: 'InputRobotTotals', element: InputRobotTotals },
-]
-
-export default routes
+  FROM (
+    SELECT *
+    FROM clients
+    WHERE client IS NOT NULL
+    ORDER BY client
+    OFFSET @offset ROWS FETCH NEXT @size ROWS ONLY
+  ) AS c
+  FOR JSON PATH
+) AS full_json;
