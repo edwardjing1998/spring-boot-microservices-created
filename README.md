@@ -296,3 +296,11 @@ SELECT (
   ) AS c
   FOR JSON PATH
 ) AS full_json;
+
+
+
+
+
+Msg 1033, Level 15, State 1, Line 298
+The ORDER BY clause is invalid in views, inline functions, derived tables, subqueries, and common table expressions, unless TOP, OFFSET or FOR XML is also specified.
+
