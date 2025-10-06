@@ -1,215 +1,154 @@
--- one row, one column (full_json) = JSON array of the matched rows
-SELECT ISNULL((
-  SELECT
-    sp.client          AS [client],
-    sp.sys_prin        AS [sysPrin],
-    sp.cust_type       AS [custType],
-    sp.undeliverable   AS [undeliverable],
-    sp.stat_a          AS [statA],
-    sp.stat_b          AS [statB],
-    sp.stat_c          AS [statC],
-    sp.stat_d          AS [statD],
-    sp.stat_e          AS [statE],
-    sp.stat_f          AS [statF],
-    sp.stat_i          AS [statI],
-    sp.stat_l          AS [statL],
-    sp.stat_o          AS [statO],
-    sp.stat_u          AS [statU],
-    sp.stat_x          AS [statX],
-    sp.stat_z          AS [statZ],
-    sp.po_box          AS [poBox],
-    sp.addr_flag       AS [addrFlag],
-    sp.temp_away       AS [tempAway],
-    sp.rps             AS [rps],
-    sp.session         AS [session],
-    sp.bad_state       AS [badState],
-    sp.A_STAT_RCH      AS [astatRch],
-    sp.NM_13           AS [nm13],
-    sp.temp_away_atts  AS [tempAwayAtts],
-    sp.report_method   AS [reportMethod],
-    sp.active          AS [active],
-    sp.notes           AS [notes],
-    sp.RET_STAT        AS [returnStatus],
-    sp.DES_STAT        AS [destroyStatus],
-    sp.non_us          AS [nonUS],
-    sp.special         AS [special],
-    sp.pin             AS [pinMailer],
-    sp.hold_days       AS [holdDays],
-    sp.FORWARDING_ADDR AS [forwardingAddress],
-    sp.contact         AS [contact],
-    sp.phone           AS [phone],
-    sp.ENTITY_CD       AS [entityCode],
+SELECT COALESCE((
+        SELECT JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'client'              VALUE sp.client,
+            'sysPrin'             VALUE sp.sys_prin,
+            'custType'            VALUE sp.cust_type,
+            'undeliverable'       VALUE sp.undeliverable,
+            'statA'               VALUE sp.stat_a,
+            'statB'               VALUE sp.stat_b,
+            'statC'               VALUE sp.stat_c,
+            'statD'               VALUE sp.stat_d,
+            'statE'               VALUE sp.stat_e,
+            'statF'               VALUE sp.stat_f,
+            'statI'               VALUE sp.stat_i,
+            'statL'               VALUE sp.stat_l,
+            'statO'               VALUE sp.stat_o,
+            'statU'               VALUE sp.stat_u,
+            'statX'               VALUE sp.stat_x,
+            'statZ'               VALUE sp.stat_z,
+            'poBox'               VALUE sp.po_box,
+            'addrFlag'            VALUE sp.addr_flag,
+            'tempAway'            VALUE sp.temp_away,
+            'rps'                 VALUE sp.rps,
+            'session'             VALUE sp.session,
+            'badState'            VALUE sp.bad_state,
+            'astatRch'            VALUE sp.A_STAT_RCH,
+            'nm13'                VALUE sp.NM_13,
+            'tempAwayAtts'        VALUE sp.temp_away_atts,
+            'reportMethod'        VALUE sp.report_method,
+            'active'              VALUE sp.active,
+            'notes'               VALUE sp.notes,
+            'returnStatus'        VALUE sp.RET_STAT,
+            'destroyStatus'       VALUE sp.DES_STAT,
+            'nonUS'               VALUE sp.non_us,
+            'special'             VALUE sp.special,
+            'pinMailer'           VALUE sp.pin,
+            'holdDays'            VALUE sp.hold_days,
+            'forwardingAddress'   VALUE sp.FORWARDING_ADDR,
+            'contact'             VALUE sp.contact,
+            'phone'               VALUE sp.phone,
+            'entityCode'          VALUE sp.ENTITY_CD,
 
-    ( SELECT ida.area AS [area], ida.sys_prin AS [sysPrin]
-      FROM invalid_deliv_areas ida
-      WHERE ida.sys_prin = sp.sys_prin
-      ORDER BY ida.area
-      FOR JSON PATH
-    ) AS [invalidDelivAreas],
+            /* invalidDelivAreas -> [] when none */
+            'invalidDelivAreas'   VALUE COALESCE((
+              SELECT JSON_ARRAYAGG(
+                JSON_OBJECT(
+                  'area'    VALUE ida.area,
+                  'sysPrin' VALUE ida.sys_prin
+                )
+              )
+              FROM invalid_deliv_areas ida
+              WHERE ida.sys_prin = sp.sys_prin
+            ), JSON '[]'),
 
-    ( SELECT
-        vst.sys_prin AS [sysPrin],
-        vst.vend_id  AS [vendorId],
-        vst.queformail_cd AS [queForMail],
-        ( SELECT
-            v.vend_id  AS [id], v.vend_nm AS [name], v.vend_actv_cd AS [active],
-            v.vend_rcvr_cd AS [receiver], v.vend_fsrv_nm AS [fileServerName],
-            v.vend_fsrv_ip AS [fileServerIp], v.fsrvr_user_id AS [fileServerUserId],
-            v.fsrvr_usr_pwd_tx AS [fileServerPassword], v.fsrvr_file_name_tx AS [fileName],
-            v.fsrvr_unc_share_tx AS [uncShare], v.fsrvr_path_tx AS [path],
-            v.fsrvr_file_archive_path_tx AS [archivePath], v.vendor_type_cd AS [vendorTypeCode],
-            v.vend_file_io AS [fileIo], v.vend_client_specific AS [clientSpecific],
-            v.vend_schedule AS [schedule], v.vend_date_last_worked AS [dateLastWorked],
-            v.vend_filesize AS [fileSize], v.vend_filetrans_specs AS [fileTransferSpecs],
-            v.vend_file_type AS [fileType], v.ftp_passive AS [ftpPassive], v.ftp_filetype AS [ftpFileType]
-          FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-        ) AS [vendor]
-      FROM vendor_sent_to vst
-      JOIN vendor v ON v.vend_id = vst.vend_id AND v.vend_file_io = 'I'
-      WHERE vst.sys_prin = sp.sys_prin
-      ORDER BY vst.vend_id
-      FOR JSON PATH
-    ) AS [vendorSentTo],
+            /* vendorSentTo: only vendors with IO='I' */
+            'vendorSentTo'        VALUE COALESCE((
+              SELECT JSON_ARRAYAGG(
+                JSON_OBJECT(
+                  'sysPrin'    VALUE vst.sys_prin,
+                  'vendorId'   VALUE vst.vend_id,
+                  'queForMail' VALUE vst.queformail_cd,
+                  'vendor'     VALUE (
+                    SELECT JSON_OBJECT(
+                      'id'               VALUE v.vend_id,
+                      'name'             VALUE v.vend_nm,
+                      'active'           VALUE v.vend_actv_cd,
+                      'receiver'         VALUE v.vend_rcvr_cd,
+                      'fileServerName'   VALUE v.vend_fsrv_nm,
+                      'fileServerIp'     VALUE v.vend_fsrv_ip,
+                      'fileServerUserId' VALUE v.fsrvr_user_id,
+                      'fileServerPassword' VALUE v.fsrvr_usr_pwd_tx,
+                      'fileName'         VALUE v.fsrvr_file_name_tx,
+                      'uncShare'         VALUE v.fsrvr_unc_share_tx,
+                      'path'             VALUE v.fsrvr_path_tx,
+                      'archivePath'      VALUE v.fsrvr_file_archive_path_tx,
+                      'vendorTypeCode'   VALUE v.vendor_type_cd,
+                      'fileIo'           VALUE v.vend_file_io,
+                      'clientSpecific'   VALUE v.vend_client_specific,
+                      'schedule'         VALUE v.vend_schedule,
+                      'dateLastWorked'   VALUE v.vend_date_last_worked,
+                      'fileSize'         VALUE v.vend_filesize,
+                      'fileTransferSpecs' VALUE v.vend_filetrans_specs,
+                      'fileType'         VALUE v.vend_file_type,
+                      'ftpPassive'       VALUE v.ftp_passive,
+                      'ftpFileType'      VALUE v.ftp_filetype
+                    )
+                    FROM vendor v
+                    WHERE v.vend_id = vst.vend_id
+                      AND v.vend_file_io = 'I'
+                  )
+                )
+              )
+              FROM vendor_sent_to vst
+              WHERE vst.sys_prin = sp.sys_prin
+                AND EXISTS (
+                  SELECT 1 FROM vendor vv
+                  WHERE vv.vend_id = vst.vend_id AND vv.vend_file_io = 'I'
+                )
+            ), JSON '[]'),
 
-    ( SELECT
-        vrf.sys_prin AS [sysPrin],
-        vrf.vend_id  AS [vendorId],
-        vrf.queformail_cd AS [queForMail],
-        ( SELECT
-            v.vend_id  AS [id], v.vend_nm AS [name], v.vend_actv_cd AS [active],
-            v.vend_rcvr_cd AS [receiver], v.vend_fsrv_nm AS [fileServerName],
-            v.vend_fsrv_ip AS [fileServerIp], v.fsrvr_user_id AS [fileServerUserId],
-            v.fsrvr_usr_pwd_tx AS [fileServerPassword], v.fsrvr_file_name_tx AS [fileName],
-            v.fsrvr_unc_share_tx AS [uncShare], v.fsrvr_path_tx AS [path],
-            v.fsrvr_file_archive_path_tx AS [archivePath], v.vendor_type_cd AS [vendorTypeCode],
-            v.vend_file_io AS [fileIo], v.vend_client_specific AS [clientSpecific],
-            v.vend_schedule AS [schedule], v.vend_date_last_worked AS [dateLastWorked],
-            v.vend_filesize AS [fileSize], v.vend_filetrans_specs AS [fileTransferSpecs],
-            v.vend_file_type AS [fileType], v.ftp_passive AS [ftpPassive], v.ftp_filetype AS [ftpFileType]
-          FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-        ) AS [vendor]
-      FROM vendor_sent_to vrf
-      JOIN vendor v ON v.vend_id = vrf.vend_id AND v.vend_file_io = 'O'
-      WHERE vrf.sys_prin = sp.sys_prin
-      ORDER BY vrf.vend_id
-      FOR JSON PATH
-    ) AS [vendorReceivedFrom]
-
-  FROM sys_prins sp
-  WHERE sp.client = :client         -- allow multiple rows
-    AND sp.sys_prin = :sysPrin
-  FOR JSON PATH
-), N'[]') AS full_json;
-
-
-
-
-
-
-SELECT ISNULL((
-  SELECT
-    sp.client          AS [client],
-    sp.sys_prin        AS [sysPrin],
-    sp.cust_type       AS [custType],
-    sp.undeliverable   AS [undeliverable],
-    sp.stat_a          AS [statA],
-    sp.stat_b          AS [statB],
-    sp.stat_c          AS [statC],
-    sp.stat_d          AS [statD],
-    sp.stat_e          AS [statE],
-    sp.stat_f          AS [statF],
-    sp.stat_i          AS [statI],
-    sp.stat_l          AS [statL],
-    sp.stat_o          AS [statO],
-    sp.stat_u          AS [statU],
-    sp.stat_x          AS [statX],
-    sp.stat_z          AS [statZ],
-    sp.po_box          AS [poBox],
-    sp.addr_flag       AS [addrFlag],
-    sp.temp_away       AS [tempAway],
-    sp.rps             AS [rps],
-    sp.session         AS [session],
-    sp.bad_state       AS [badState],
-    sp.A_STAT_RCH      AS [astatRch],
-    sp.NM_13           AS [nm13],
-    sp.temp_away_atts  AS [tempAwayAtts],
-    sp.report_method   AS [reportMethod],
-    sp.active          AS [active],
-    sp.notes           AS [notes],
-    sp.RET_STAT        AS [returnStatus],
-    sp.DES_STAT        AS [destroyStatus],
-    sp.non_us          AS [nonUS],
-    sp.special         AS [special],
-    sp.pin             AS [pinMailer],
-    sp.hold_days       AS [holdDays],
-    sp.FORWARDING_ADDR AS [forwardingAddress],
-    sp.contact         AS [contact],
-    sp.phone           AS [phone],
-    sp.ENTITY_CD       AS [entityCode],
-
-    /* invalidDelivAreas */
-    ( SELECT ida.area AS [area], ida.sys_prin AS [sysPrin]
-      FROM invalid_deliv_areas ida
-      WHERE ida.sys_prin = sp.sys_prin
-      ORDER BY ida.area
-      FOR JSON PATH
-    ) AS [invalidDelivAreas],
-
-    /* vendorSentTo (I) */
-    ( SELECT
-        vst.sys_prin AS [sysPrin],
-        vst.vend_id  AS [vendorId],
-        vst.queformail_cd AS [queForMail],
-        ( SELECT
-            v.vend_id  AS [id], v.vend_nm AS [name], v.vend_actv_cd AS [active],
-            v.vend_rcvr_cd AS [receiver], v.vend_fsrv_nm AS [fileServerName],
-            v.vend_fsrv_ip AS [fileServerIp], v.fsrvr_user_id AS [fileServerUserId],
-            v.fsrvr_usr_pwd_tx AS [fileServerPassword], v.fsrvr_file_name_tx AS [fileName],
-            v.fsrvr_unc_share_tx AS [uncShare], v.fsrvr_path_tx AS [path],
-            v.fsrvr_file_archive_path_tx AS [archivePath], v.vendor_type_cd AS [vendorTypeCode],
-            v.vend_file_io AS [fileIo], v.vend_client_specific AS [clientSpecific],
-            v.vend_schedule AS [schedule], v.vend_date_last_worked AS [dateLastWorked],
-            v.vend_filesize AS [fileSize], v.vend_filetrans_specs AS [fileTransferSpecs],
-            v.vend_file_type AS [fileType], v.ftp_passive AS [ftpPassive], v.ftp_filetype AS [ftpFileType]
-          FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-        ) AS [vendor]
-      FROM vendor_sent_to vst
-      JOIN vendor v ON v.vend_id = vst.vend_id AND v.vend_file_io = 'I'
-      WHERE vst.sys_prin = sp.sys_prin
-      ORDER BY vst.vend_id
-      FOR JSON PATH
-    ) AS [vendorSentTo],
-
-    /* vendorReceivedFrom (O) */
-    ( SELECT
-        vrf.sys_prin AS [sysPrin],
-        vrf.vend_id  AS [vendorId],
-        vrf.queformail_cd AS [queForMail],
-        ( SELECT
-            v.vend_id  AS [id], v.vend_nm AS [name], v.vend_actv_cd AS [active],
-            v.vend_rcvr_cd AS [receiver], v.vend_fsrv_nm AS [fileServerName],
-            v.vend_fsrv_ip AS [fileServerIp], v.fsrvr_user_id AS [fileServerUserId],
-            v.fsrvr_usr_pwd_tx AS [fileServerPassword], v.fsrvr_file_name_tx AS [fileName],
-            v.fsrvr_unc_share_tx AS [uncShare], v.fsrvr_path_tx AS [path],
-            v.fsrvr_file_archive_path_tx AS [archivePath], v.vendor_type_cd AS [vendorTypeCode],
-            v.vend_file_io AS [fileIo], v.vend_client_specific AS [clientSpecific],
-            v.vend_schedule AS [schedule], v.vend_date_last_worked AS [dateLastWorked],
-            v.vend_filesize AS [fileSize], v.vend_filetrans_specs AS [fileTransferSpecs],
-            v.vend_file_type AS [fileType], v.ftp_passive AS [ftpPassive], v.ftp_filetype AS [ftpFileType]
-          FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-        ) AS [vendor]
-      FROM vendor_sent_to vrf
-      JOIN vendor v ON v.vend_id = vrf.vend_id AND v.vend_file_io = 'O'
-      WHERE vrf.sys_prin = sp.sys_prin
-      ORDER BY vrf.vend_id
-      FOR JSON PATH
-    ) AS [vendorReceivedFrom]
-
-  FROM sys_prins sp
-  WHERE sp.client = :client
-    AND sp.sys_prin = :sysPrin
-  FOR JSON PATH
-), N'[]') AS full_json;
+            /* vendorReceivedFrom: only vendors with IO='O' */
+            'vendorReceivedFrom'  VALUE COALESCE((
+              SELECT JSON_ARRAYAGG(
+                JSON_OBJECT(
+                  'sysPrin'    VALUE vrf.sys_prin,
+                  'vendorId'   VALUE vrf.vend_id,
+                  'queForMail' VALUE vrf.queformail_cd,
+                  'vendor'     VALUE (
+                    SELECT JSON_OBJECT(
+                      'id'               VALUE v.vend_id,
+                      'name'             VALUE v.vend_nm,
+                      'active'           VALUE v.vend_actv_cd,
+                      'receiver'         VALUE v.vend_rcvr_cd,
+                      'fileServerName'   VALUE v.vend_fsrv_nm,
+                      'fileServerIp'     VALUE v.vend_fsrv_ip,
+                      'fileServerUserId' VALUE v.fsrvr_user_id,
+                      'fileServerPassword' VALUE v.fsrvr_usr_pwd_tx,
+                      'fileName'         VALUE v.fsrvr_file_name_tx,
+                      'uncShare'         VALUE v.fsrvr_unc_share_tx,
+                      'path'             VALUE v.fsrvr_path_tx,
+                      'archivePath'      VALUE v.fsrvr_file_archive_path_tx,
+                      'vendorTypeCode'   VALUE v.vendor_type_cd,
+                      'fileIo'           VALUE v.vend_file_io,
+                      'clientSpecific'   VALUE v.vend_client_specific,
+                      'schedule'         VALUE v.vend_schedule,
+                      'dateLastWorked'   VALUE v.vend_date_last_worked,
+                      'fileSize'         VALUE v.vend_filesize,
+                      'fileTransferSpecs' VALUE v.vend_filetrans_specs,
+                      'fileType'         VALUE v.vend_file_type,
+                      'ftpPassive'       VALUE v.ftp_passive,
+                      'ftpFileType'      VALUE v.ftp_filetype
+                    )
+                    FROM vendor v
+                    WHERE v.vend_id = vrf.vend_id
+                      AND v.vend_file_io = 'O'
+                  )
+                )
+              )
+              FROM vendor_sent_to vrf
+              WHERE vrf.sys_prin = sp.sys_prin
+                AND EXISTS (
+                  SELECT 1 FROM vendor vv
+                  WHERE vv.vend_id = vrf.vend_id AND vv.vend_file_io = 'O'
+                )
+            ), JSON '[]')
+          )
+        )
+        FROM sys_prins sp
+        WHERE sp.client = :client
+          AND sp.sys_prin = :sysPrin
+      ), JSON '[]') AS full_json;
 
 
 
